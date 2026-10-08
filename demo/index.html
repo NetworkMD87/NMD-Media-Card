@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NMD Media Card — local sample preview</title>
+<style>
+  :root {color-scheme:dark; font-family:Arial,sans-serif; background:#11161b; color:#f4f6f8; --card-background-color:#20262d; --primary-text-color:#f4f6f8; --secondary-text-color:#bcc8d4; --divider-color:#3b424a; --primary-color:#80cbed;}
+  * {box-sizing:border-box} body {margin:0;padding:24px 16px} main {max-width:760px;margin:auto} h1 {font-size:22px;font-weight:500;margin:0 0 8px} p {font-size:14px;line-height:1.5;color:#bfcbd5} .tools {display:flex;flex-wrap:wrap;gap:16px;margin:20px 0 24px;align-items:center} label {font-size:14px;display:flex;gap:8px;align-items:center} select,button {font:inherit;min-height:40px;padding:6px 10px;color:inherit;background:#26333e;border:1px solid #667887;border-radius:6px} .samples {width:100%;max-width:455px;margin:auto} h2 {font-size:14px;font-weight:400;margin:24px 0 8px;color:#c6d1db} #receipt {padding:12px 0;min-height:45px;overflow-wrap:anywhere;font-size:13px;color:#bfcbd5} a {color:#9bd4ec} body.light {color-scheme:light;background:#f4f7f9;color:#19242d;--card-background-color:#eef2f5;--primary-text-color:#18252d;--secondary-text-color:#52616e;--divider-color:#ced6de} body.light p,body.light h2,body.light #receipt {color:#52616e} body.light select,body.light button {color:#18252d;background:#e4edf3} body.light a {color:#206780}
+</style>
+<main>
+  <h1>NMD Media Card</h1>
+  <p>Local development preview. Fictional programmes and artwork; every control calls a sample service. No Home Assistant connection.</p>
+  <div class="tools">
+    <label>Card width <select id="width"><option value="320">320 px</option><option value="400">400 px</option><option value="455" selected>455 px</option><option value="520">520 px</option></select></label>
+    <button id="theme" type="button">Use light theme</button>
+    <label><input id="failure" type="checkbox"> Simulate service failure</label>
+  </div>
+  <div class="samples">
+    <h2>Idle</h2><nmd-media-card id="idle"></nmd-media-card>
+    <h2>One device playing</h2><nmd-media-card id="single"></nmd-media-card>
+    <h2>Multiple devices playing</h2><nmd-media-card id="multi"></nmd-media-card>
+    <h2>TiviMate · app-only information</h2><nmd-media-card id="limited"></nmd-media-card>
+    <h2>Missing or unavailable devices</h2><nmd-media-card id="unavailable"></nmd-media-card>
+  </div>
+  <div id="receipt" aria-live="polite">Sample controls ready.</div>
+  <p><a href="/tests/browser.html">Open browser checks</a></p>
+</main>
+<script type="module">
+  import '../nmd-media-card.js';
+  const a = 'media_player.sample_lounge', b = 'media_player.sample_den';
+  const config = {type:'custom:nmd-media-card',devices:[{entity:a,name:'Living room'},{entity:b,name:'Snug'}]};
+  const playing = (entity,app,title,picture) => ({entity_id:entity,state:'playing',attributes:{friendly_name:entity===a?'Living room':'Snug',app_name:app,media_title:title,entity_picture:picture,media_duration:2890,media_position:1122,media_position_updated_at:new Date().toISOString(),supported_features:16385}});
+  const first = playing(a,'Plex','The Last Horizon','/demo/horizon.svg');
+  Object.assign(first.attributes,{media_series_title:'The Last Horizon',media_season:1,media_episode:4,media_title:'Into the Blue'});
+  const second = playing(b,'Emby','A Place Beyond','/demo/beyond.svg');
+  const empty = (id,state) => ({entity_id:id,state,attributes:{}});
+  const fixtures = {
+    idle:{[a]:empty(a,'idle'),[b]:empty(b,'off')},
+    single:{[a]:first,[b]:empty(b,'off')},
+    multi:{[a]:first,[b]:second},
+    limited:{[a]:{entity_id:a,state:'playing',attributes:{app_name:'TiviMate',assumed_state:true}},[b]:empty(b,'off')},
+    unavailable:{[a]:empty(a,'unavailable')},
+  };
+  for (const [id,fixture] of Object.entries(fixtures)) {
+    const card = document.getElementById(id);
+    const states = structuredClone(fixture);
+    const hass = {states,hassUrl:path=>path,callService:async(domain,service,data)=>{
+      document.getElementById('receipt').textContent=`Sample request: ${domain}.${service} → ${data.entity_id}`;
+      if (document.getElementById('failure').checked) throw new Error('Sample failure');
+      const entity = states[data.entity_id];
+      states[data.entity_id]={...entity,state:service==='media_pause'?'paused':'playing',attributes:{...entity.attributes,media_position_updated_at:new Date().toISOString()}};
+      card.hass = {...hass,states};
+    }};
+    card.setConfig(config);
+    card.hass = hass;
+  }
+  document.getElementById('width').addEventListener('change',event=>document.querySelector('.samples').style.maxWidth=event.target.value+'px');
+  document.getElementById('theme').addEventListener('click',event=>{
+    const light=document.body.classList.toggle('light');
+    event.target.textContent=light?'Use dark theme':'Use light theme';
+  });
+</script>
+</html>

@@ -1,0 +1,57 @@
+NMD Media Card — Free Non-Commercial Use Licence
+Version 1.0, 8 October 2026
+
+Copyright (c) 2026 NetworkMD (NetworkMD87). All rights reserved except
+for the permissions expressly granted below.
+
+1. Scope
+This licence covers the original NMD Media Card code, documentation and
+sample artwork (the Software). Third-party materials are excluded and
+remain subject to their own terms; see assets/NOTICE.md.
+
+2. Permitted use and sharing
+You may download, copy, install and run the unmodified Software without
+charge for your personal, non-commercial use. You may share unmodified
+copies free of charge for non-commercial purposes, provided you retain
+this licence and all copyright, attribution and third-party notices.
+You may inspect the publicly available source code.
+
+3. Configuration
+You may configure the Software through its supported configuration
+options, including entities, room names, logo URLs and appearance
+settings. Such configuration is permitted and is not a prohibited
+modification. This does not permit editing the Software's source code.
+
+4. Restrictions
+Without prior written permission from the copyright holder, you may not:
+- modify, adapt, translate the code, or create derivative versions of
+  the Software, whether for private use or distribution;
+- sell, rent, sublicense for payment, or otherwise charge for the Software;
+- use or distribute it for commercial purposes, monetary compensation
+  or commercial advantage, including as part of a paid product, service,
+  installation, subscription or bundle;
+- remove or alter its copyright, licence or attribution notices.
+
+5. Reserved and mandatory rights
+All rights not expressly granted are reserved. No trademark rights or
+endorsement are granted. These restrictions do not limit rights that
+applicable law does not allow to be restricted, or permissions separately
+granted by the copyright holder. Permissions required by the hosting
+platform's terms, including viewing and making an unmodified platform
+fork, are not withdrawn by this licence; they do not authorise further
+modification or commercial exploitation under this licence.
+Requests for additional permission may be directed to NetworkMD87 through
+the project's GitHub repository.
+
+6. No warranty or support commitment
+To the extent permitted by applicable law, the Software is provided
+"as is", without warranties of any kind, express or implied, including
+merchantability, fitness for a particular purpose and non-infringement.
+The copyright holder has no obligation to provide support or updates.
+
+7. Liability
+To the extent permitted by applicable law, the copyright holder is not
+liable for losses or damages arising from use of, or inability to use,
+the Software. Nothing excludes liability that cannot lawfully be excluded.
+
+This is a custom, restrictive software licence, not an open-source licence.
