@@ -1,25 +1,24 @@
 # NMD Media Card
 
-A compact Home Assistant custom card combining configured media players into one featured-room view. This is an **early development version**, not a stable release or a live-verified Home Assistant installation.
+A custom Home Assistant card for seeing what's playing around the house in one place.
 
-The owner-approved design uses faded full-width artwork, app logos, a separate dark strip for other active rooms, and an idle view that remains visible. See [design decisions](DESIGN-DECISIONS.md). It adapts to the container rather than fixing the card to a desktop width.
+One room takes the main spot, with artwork, programme details and playback controls. Other active rooms appear underneath; tap one to bring it into view. When nothing is playing, the card stays visible so you can still see the status of your devices.
 
-## Local preview and checks
+**This is an early development version.** It has been tested locally with sample data, but hasn't yet been tested in a live Home Assistant dashboard. There is no stable release or HACS installation yet.
 
-Requires Node.js 20 or later for the local tools. No npm dependencies or build step are required.
+## Manual installation
 
-```powershell
-node --test tests/media-model.test.js
-node scripts/preview.mjs
-```
+If you'd like to try the development version, copy these files and folders into `config/www/nmd-media-card/` in Home Assistant:
 
-Open `http://127.0.0.1:8767/`. The preview has fictional data, original sample artwork, selectable widths and light/dark themes. Play/pause calls a sample service only. Browser checks are at `http://127.0.0.1:8767/tests/browser.html`; their summary and `window.browserResults` report results. Stop the preview with Ctrl+C.
+- `nmd-media-card.js`
+- `src/`
+- `assets/`
 
-The preview serves only local demo, source, asset and browser-test files on loopback. It does not expose the private handoff or connect to Home Assistant, Plex, Emby, Silo or a Shield.
+Keep the folder structure intact. Add `/local/nmd-media-card/nmd-media-card.js` as a **JavaScript module** in your dashboard resources, then add a manual card using the example below.
 
-## Configuration
+## Set up your rooms
 
-Configure the exact media-player entity for each device. Never list two entities for the same physical player as separate rooms merely because different integrations expose them.
+Replace the example entities with your own media players:
 
 ```yaml
 type: custom:nmd-media-card
@@ -30,15 +29,24 @@ devices:
     name: Snug
 ```
 
-These entity IDs are placeholders. String entries such as `- media_player.example_lounge` also work; the friendly name is used unless `name` is provided. Add more entries for additional devices. Each other active device contributes one compact preview row; inactive statuses wrap together. The first local version has no separate visual configuration editor.
+Add as many devices as you need, using one entity per physical player. If several integrations expose the same device, choose the entity that provides the playback information you want to use.
 
-The selected room stays featured while it is active. When it stops, selection falls back in configuration order, preferring playing, then paused, buffering, app-open and on states. Clicking an other-room preview changes the featured room only; it does not change device playback.
+The `name` is optional. Leave it out to use the entity's friendly name, or use the shorter form:
 
-### App-open versus real playback
+```yaml
+type: custom:nmd-media-card
+devices:
+  - media_player.example_lounge
+  - media_player.example_den
+```
 
-The default `state_source: entity` uses the configured entity's reported state. It is appropriate only when that entity actually reports playback. An open Android TV app does not by itself prove anything is playing.
+Tap another room to see its details. This changes the card's view without interrupting playback. Your chosen room stays selected while it's active. After that, the card picks another active room, giving priority to anything playing; ties follow the order in your configuration.
 
-For an Android TV Remote entity, an unverified universal player aggregating an assumed source, or another source with app identification only:
+Configuration is currently YAML only.
+
+### When Home Assistant only knows which app is open
+
+Some entities can tell you that an app is open without knowing whether it's playing anything. For those, use `state_source: app`:
 
 ```yaml
 type: custom:nmd-media-card
@@ -48,13 +56,15 @@ devices:
     state_source: app
 ```
 
-App-only mode shows the app, explicitly marks playback as unconfirmed and omits programme artwork, progress and playback controls. The card also detects `assumed_state: true` and `androidtv_remote` when its platform is supplied in HA's entity registry; explicit configuration remains necessary when that information is absent or hidden behind a universal entity. Idle, off, unknown and unavailable remain distinct.
+The card will show the app name and mark playback as unconfirmed. Artwork, progress and play/pause controls are hidden in this mode.
 
-An optional `app_name` provides a display fallback for an app-specific integration that omits its app name. Do not use a fixed app name for a device that changes applications.
+This is useful for Android TV Remote entities and universal players that rely on an assumed playback state. The card detects some of these cases automatically, but use the setting explicitly if your entity doesn't provide that information.
+
+The default, `state_source: entity`, uses the playback state reported by your media player. If an integration dedicated to a single app leaves out its name, you can add `app_name` to that device's configuration. Avoid setting a fixed app name on a device that switches between apps.
 
 ### Logos and artwork
 
-Plex and Emby logo PNGs are bundled locally. Other app names remain as readable text until a matching logo is configured. Missing or failed images fall back cleanly.
+Plex and Emby logos are included. You can supply others through `app_logos`:
 
 ```yaml
 type: custom:nmd-media-card
@@ -65,41 +75,46 @@ app_logos:
   silo: /local/media-logos/silo.png
 ```
 
-Logo keys are lowercase application names. Root-relative image paths and HTTP(S) image URLs are accepted; credentials embedded in URLs, executable URLs and inline data URLs are rejected. Keep credentials out of card configuration. See [asset provenance and third-party terms](assets/NOTICE.md).
+Use lowercase app names as the keys. Image paths starting with `/` and HTTP(S) URLs are supported. URLs containing a username or password, executable URLs and inline data URLs are rejected. Keep credentials out of your configuration.
 
-The card uses the entity's `entity_picture`, displayed as a cover image behind a readability gradient. Artwork quality and crop depend on what the integration supplies; a poster may be cropped. It does not fetch extra posters, invent channel identity, or create a new media proxy. Local HA artwork URLs supplied by existing integrations remain usable. There is no video player or stream routing.
+If a logo is missing or won't load, the app name is shown as text. Artwork comes from the media player's `entity_picture`; its quality and crop depend on what the integration provides.
+
+See [the asset notices](assets/NOTICE.md) for logo sources and third-party terms.
 
 ### Playback controls
 
-Pause is shown only for a reported playing entity with HA's pause feature. Resume is shown only for a reported paused entity with its play feature. Requests target that configured entity; controls are rechecked when clicked. The card waits for HA state updates rather than pretending that a request succeeded.
+Play and pause appear when the selected entity reports a suitable playback state and supports the action. The display updates when Home Assistant reports the new state.
 
-Progress is read-only. It requires valid duration and position; elapsed time advances only for playing media with a valid position timestamp. Unknown progress is not displayed as zero. A stale integration can still report stale source data: the card clears media when playback ends and suppresses unchanged metadata across detected app switches, but cannot prove the freshness of every backend field.
+The progress bar is for display only; you can't use it to seek. It appears when the entity supplies a valid position and duration. Missing progress information is left out.
 
-## Later installation — not performed
+## What to expect
 
-After entity mapping and local review, the runtime files can be copied together into HA's `www/nmd-media-card/` directory:
+The card displays information supplied by Home Assistant. It doesn't play or relay video, and it can't fill in titles, artwork or channel details that an integration doesn't provide.
 
-- `nmd-media-card.js`
-- `src/` (all three JavaScript modules)
-- `assets/` (logos and provenance)
+Real-device testing is still needed for Plex and Emby. Silo compatibility and TiviMate channel information are also unconfirmed. If an integration reports old information, the card may still show it, although it clears details when playback ends and handles detected app changes.
 
-Register `/local/nmd-media-card/nmd-media-card.js` as a dashboard JavaScript module, then add the YAML card. Keeping the folder layout matters because the module imports and logo paths are relative. Do not copy the private project handoff, local screenshots, test logs or development files into a public package.
+The minimum supported Home Assistant version hasn't been established yet. Live dashboard testing, phone and tablet testing, a visual configuration editor and HACS distribution are still ahead. The [verification notes](VERIFICATION.md) record the local checks completed so far.
 
-No stable release or HACS registration is provided. Live Home Assistant and physical-device validation remain pending.
+## Run the demo locally
 
-## Verification boundary and remaining work
+You'll need Node.js 20 or later. There are no npm dependencies to install and no build step.
 
-Local model/browser checks exercise sample state and service responses, not a real Home Assistant frontend or physical media player. The minimum supported HA release and owner/device acceptance remain unverified.
+```sh
+node scripts/preview.mjs
+```
 
-- Verify both real room entities and any universal-player children/routing.
-- Inspect actual Plex/Emby metadata, progress, app identity and supported actions per device.
-- Investigate Silo's server/client session reporting independently; compatibility is not established by its API claims.
-- Establish whether TiviMate exposes reliable current-channel/programme data. Until then its limited-information state is intentional. Silo and TiviMate remain target apps.
-- Confirm real artwork, touch/keyboard use and phone/tablet/desktop layout in the owner's dashboard.
-- Decide the configuration editor, packaged releases and HACS distribution separately.
+Open `http://127.0.0.1:8767/` to try the card with sample rooms and artwork. You can switch between light and dark themes and different card widths. The demo doesn't connect to your devices, and its playback buttons only affect the sample data. Stop the server with Ctrl+C.
 
-Implementation references: [HA custom cards](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/), [media-player states and features](https://developers.home-assistant.io/docs/core/entity/media-player/), and [Android TV Remote limitations](https://www.home-assistant.io/integrations/androidtv_remote/).
+Run the model tests with:
+
+```sh
+node --test tests/media-model.test.js
+```
+
+With the preview server running, browser checks are available at `http://127.0.0.1:8767/tests/browser.html`.
 
 ## Licence
 
-Free for personal, non-commercial use under the custom [NMD Media Card licence](LICENSE). Supported configuration is allowed. Code modifications, derivative versions and commercial use require prior written permission. Unmodified copies may be shared free with the licence and notices retained. This is source-available software, not open source. Third-party assets retain their own terms in [assets/NOTICE.md](assets/NOTICE.md).
+You're welcome to use NMD Media Card free for personal, non-commercial use and configure it for your own setup. You can also share unmodified copies for free, keeping the licence and notices included.
+
+Changing the code, creating derivative versions or using it commercially requires prior written permission. The source is public, but this is **not an open-source licence**. Read the [full licence](LICENSE) for the terms; third-party assets keep their [own terms](assets/NOTICE.md).
