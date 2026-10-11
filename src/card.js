@@ -5,6 +5,8 @@ import { styles } from './styles.js';
 const LOGOS = {
   plex: new URL('../assets/plex.png', import.meta.url).href,
   emby: new URL('../assets/emby.png', import.meta.url).href,
+  tivimate: new URL('../assets/tivimate.png', import.meta.url).href,
+  silo: new URL('../assets/silo.png', import.meta.url).href,
 };
 const ICONS = {
   tv: '<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>',
@@ -170,7 +172,7 @@ export class NmdMediaCard extends HTMLElement {
   }
 
   _app(view) {
-    const app = node('span','app');
+    const app = node('span',view.appKey === 'tivimate' ? 'app app-tivimate' : 'app');
     if (!view.appName) return app;
     app.setAttribute('role','img');
     app.setAttribute('aria-label',view.appName);
@@ -198,7 +200,7 @@ export class NmdMediaCard extends HTMLElement {
     top.append(node('span','room',view.name),node('span','state',`· ${view.statusLabel}`),this._app(view));
     const content = node('div','content');
     const text = node('div','title-group');
-    text.append(node('h2','title',view.title));
+    if (!view.titleIsAppFallback) text.append(node('h2','title',view.title));
     if (view.detail) text.append(node('div','detail',view.detail));
     content.append(text);
     if (view.action) {
@@ -244,7 +246,7 @@ export class NmdMediaCard extends HTMLElement {
     button.setAttribute('aria-label',`Show ${view.name}: ${view.title}`);
     if (view.artwork) button.append(this._image(view.artwork,'thumb'));
     const text = node('span','other-text');
-    text.append(node('div','other-meta',`${view.name} · ${view.statusLabel}${view.appName ? ` · ${view.appName}` : ''}`),node('div','other-title',view.title));
+    text.append(node('div','other-meta',`${view.name} · ${view.statusLabel}${view.appName ? ` · ${view.appName}` : ''}`),node('div','other-title',view.titleIsAppFallback ? view.detail : view.title));
     button.append(text,icon('chevron','chevron'));
     button.addEventListener('click', () => {
       this._selected = view.entity;

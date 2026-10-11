@@ -7,7 +7,7 @@ Owner approved the featured-room design and subsequent artwork/logo revisions on
 - A featured room, with selectable previews for other active rooms in a separate darker strip.
 - Movie/episode artwork fills the featured area, with a strong readability fade. No duplicate poster when a backdrop is present.
 - A restrained fallback when artwork or reliable programme information is absent. An open app is not proof of playback.
-- App logos at the top right, with an accessible name and text fallback. Plex and Emby were shown; TiviMate logo sourcing remains open.
+- App logos at the top right, with an accessible name and text fallback. On 11 October the owner selected TiviMate's blue website `tv` symbol with rounded corners, requested the best fitting official Silo asset and the existing Emby logo, and requested removal of the repeated app-name heading. Silo uses its square project icon, which its brand guide specifies for compact integration placements. Genuine programme titles remain visible. The TiviMate asset is for local testing pending redistribution rights confirmation.
 - Supported play/pause, slim read-only progress, and retained paused content.
 - Responsive to the card container. The 520px preview was explored; it is not a fixed production width.
 

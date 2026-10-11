@@ -267,6 +267,7 @@ function baseResult(device, entity, status) {
     appKey: null,
     appIdentity: null,
     title: null,
+    titleIsAppFallback: false,
     detail: null,
     artwork: null,
     progress: null,
@@ -331,6 +332,7 @@ export function buildDevice(device, entity, { now = Date.now(), previous = null,
       result.statusLabel = STATUS_LABELS.app;
       result.active = true;
       result.title = app.name;
+      result.titleIsAppFallback = true;
       result.detail = app.key === 'tivimate'
         ? 'Channel information unavailable'
         : 'Programme information unavailable';
@@ -350,7 +352,9 @@ export function buildDevice(device, entity, { now = Date.now(), previous = null,
     ? attributes.media_series_title
     : attributes.media_title;
   const detail = metadataDetail(attributes);
+  const hasTitle = typeof candidateTitle === 'string' && Boolean(candidateTitle.trim());
   if (state === 'playing' || state === 'paused' || state === 'buffering' || state === 'on') {
+    result.titleIsAppFallback = !metadataStale && !hasTitle && Boolean(app);
     result.title = metadataStale ? (state === 'on' ? (device?.name ?? 'Media player on') : 'Media playing')
       : (typeof candidateTitle === 'string' && candidateTitle.trim()
         ? candidateTitle.trim()

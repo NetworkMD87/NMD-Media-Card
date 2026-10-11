@@ -332,6 +332,16 @@ test('keeps a selected active device and falls back by status across any device 
   assert.equal(chooseFeatured([], null), null);
 });
 
+test('distinguishes an app-name fallback from a real programme title with the same name', () => {
+  const app = { app_id: 'ar.tvplayer.tv' };
+  assert.equal(buildDevice(configured(), stateEntity('playing', app)).titleIsAppFallback, true);
+  assert.equal(buildDevice(configured(), stateEntity('on', app)).titleIsAppFallback, true);
+  const programme = buildDevice(configured(), stateEntity('playing', { ...app, media_title: 'TiviMate' }));
+  assert.equal(programme.title, 'TiviMate');
+  assert.equal(programme.titleIsAppFallback, false);
+  assert.equal(buildDevice(configured(), stateEntity('playing')).titleIsAppFallback, false);
+});
+
 test('formats durations consistently', () => {
   assert.equal(formatTime(0), '0:00');
   assert.equal(formatTime(65), '1:05');

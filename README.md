@@ -4,7 +4,7 @@ A custom Home Assistant card for seeing what's playing around the house in one p
 
 One room takes the main spot, with artwork, programme details and playback controls. Other active rooms appear underneath; tap one to bring it into view. When nothing is playing, the card stays visible so you can still see the status of your devices.
 
-**This is an early development version.** It has been tested locally with sample data, but hasn't yet been tested in a live Home Assistant dashboard. There is no stable release or HACS installation yet.
+**This is an early development version.** It has been tested locally with sample data. Initial live Home Assistant checks on one Shield showed the card's idle view, Plex playback status, artwork and progress, and TiviMate playback status with working pause/resume controls. TiviMate programme metadata and broader compatibility remain unverified. There is no stable release or HACS installation yet.
 
 ## Manual installation
 
@@ -64,7 +64,7 @@ The default, `state_source: entity`, uses the playback state reported by your me
 
 ### Logos and artwork
 
-Plex and Emby logos are included. You can supply others through `app_logos`:
+Plex, Emby and Silo logos are included. The current local test also includes the owner's selected TiviMate website symbol (see its separate asset notice). You can supply or override logos through `app_logos`:
 
 ```yaml
 type: custom:nmd-media-card
@@ -79,6 +79,8 @@ Use lowercase app names as the keys. Image paths starting with `/` and HTTP(S) U
 
 If a logo is missing or won't load, the app name is shown as text. Artwork comes from the media player's `entity_picture`; its quality and crop depend on what the integration provides.
 
+An app name is shown once in the corner. The programme heading is omitted when only an app name is available; genuine programme titles remain visible. Android Debug Bridge supplies periodic screen captures for `entity_picture`, rather than programme artwork.
+
 See [the asset notices](assets/NOTICE.md) for logo sources and third-party terms.
 
 ### Playback controls
@@ -91,9 +93,9 @@ The progress bar is for display only; you can't use it to seek. It appears when 
 
 The card displays information supplied by Home Assistant. It doesn't play or relay video, and it can't fill in titles, artwork or channel details that an integration doesn't provide.
 
-Real-device testing is still needed for Plex and Emby. Silo compatibility and TiviMate channel information are also unconfirmed. If an integration reports old information, the card may still show it, although it clears details when playback ends and handles detected app changes.
+Further real-device testing is still needed for Plex and Emby. Silo compatibility and TiviMate channel information are also unconfirmed. If an integration reports old information, the card may still show it, although it clears details when playback ends and handles detected app changes.
 
-The minimum supported Home Assistant version hasn't been established yet. Live dashboard testing, phone and tablet testing, a visual configuration editor and HACS distribution are still ahead. The [verification notes](VERIFICATION.md) record the local checks completed so far.
+The minimum supported Home Assistant version hasn't been established yet. Further live dashboard testing, phone and tablet testing, a visual configuration editor and HACS distribution are still ahead. The [verification notes](VERIFICATION.md) record the local checks and initial live results.
 
 ## Run the demo locally
 

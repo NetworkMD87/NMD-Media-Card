@@ -22,6 +22,7 @@ h2 { font-size:17px; font-weight:500; line-height:24px; margin:0; overflow-wrap:
 .state { flex:none; }
 .app { display:grid; place-items:center; flex:none; margin-left:auto; min-width:24px; max-width:34%; min-height:24px; font-size:10px; letter-spacing:.04em; overflow-wrap:anywhere; text-align:right; }
 .app img { width:24px; height:24px; object-fit:contain; }
+.app-tivimate img { border-radius:4px; }
 .content { display:flex; align-items:center; gap:12px; min-height:61px; margin-top:10px; }
 .title-group { flex:1; min-width:0; }
 .title { font-size:18px; font-weight:500; line-height:23px; margin:0; overflow-wrap:anywhere; }
