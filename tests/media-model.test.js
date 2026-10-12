@@ -318,6 +318,140 @@ test('preserves stale-app provenance across idle, off and missing-entity gaps', 
   assert.equal(fresh.artwork, '/new.jpg');
 });
 
+const plexMetadata = {
+  app_name: 'Plex', media_title: 'Old Plex film', media_content_id: 'plex-123',
+  entity_picture: '/old-plex.jpg', media_position: 15, media_duration: 90,
+};
+
+test('rejects inherited programme, artwork and progress after empty inactive gaps before switching apps', () => {
+  for (const gapState of ['idle', 'off', 'unavailable', 'unknown', null]) {
+    let previous = buildDevice(configured(), stateEntity('playing', plexMetadata));
+    for (let count = 0; count < 2; count += 1) {
+      previous = buildDevice(configured(), gapState === null ? null : stateEntity(gapState), { previous });
+    }
+    const switched = buildDevice(configured(), stateEntity('playing', {
+      ...plexMetadata, app_name: 'Emby',
+    }), { previous });
+    assert.equal(switched.metadataStale, true, `gap: ${gapState}`);
+    assert.equal(switched.title, 'Media playing');
+    assert.equal(switched.detail, 'Programme information unavailable');
+    assert.equal(switched.artwork, null);
+    assert.equal(switched.progress, null);
+  }
+});
+
+test('artwork and progress refreshes do not validate inherited programme fields', () => {
+  let previous = buildDevice(configured(), stateEntity('playing', plexMetadata));
+  previous = buildDevice(configured(), stateEntity('playing', {
+    ...plexMetadata, app_name: 'Emby',
+  }), { previous });
+  for (const picture of ['/new-emby.jpg', '/newer-emby.jpg']) {
+    previous = buildDevice(configured(), stateEntity('playing', {
+      ...plexMetadata, app_name: 'Emby', entity_picture: picture,
+      media_position: 25, media_duration: 120, media_position_updated_at: '2026-10-12T10:00:00Z',
+    }), { previous });
+    assert.equal(previous.metadataStale, true);
+    assert.equal(previous.title, 'Media playing');
+    assert.equal(previous.detail, 'Programme information unavailable');
+    assert.equal(previous.progress, null);
+    assert.equal(previous.artwork, picture, 'fresh artwork is independent of stale programme fields');
+  }
+  const fresh = buildDevice(configured(), stateEntity('playing', {
+    ...plexMetadata, app_name: 'Emby', media_title: 'New Emby film', media_content_id: 'emby-456',
+    entity_picture: '/newer-emby.jpg',
+  }), { previous });
+  assert.equal(fresh.metadataStale, false);
+  assert.equal(fresh.title, 'New Emby film');
+  assert.equal(fresh.artwork, '/newer-emby.jpg');
+  assert.equal(fresh.progress.position, 15);
+});
+
+test('attributes first observed or refreshed while inactive retain their source app', () => {
+  for (const state of ['idle', 'off', 'unavailable', 'unknown']) {
+    for (const initial of [null, buildDevice(configured(), stateEntity('playing', {
+      ...plexMetadata, media_title: 'Earlier Plex film', entity_picture: '/earlier.jpg',
+    }))]) {
+      const inactive = buildDevice(configured(), stateEntity(state, plexMetadata), { previous: initial });
+      assert.equal(inactive.title, null);
+      assert.equal(inactive.artwork, null);
+      const switched = buildDevice(configured(), stateEntity('playing', {
+        ...plexMetadata, app_name: 'Emby',
+      }), { previous: inactive });
+      assert.equal(switched.metadataStale, true, state);
+      assert.equal(switched.title, 'Media playing');
+      assert.equal(switched.artwork, null);
+      assert.equal(switched.progress, null);
+    }
+  }
+});
+
+test('fresh programme fields do not validate inherited artwork from another app', () => {
+  const previous = buildDevice(configured(), stateEntity('playing', plexMetadata));
+  const fresh = buildDevice(configured(), stateEntity('playing', {
+    ...plexMetadata, app_name: 'Emby', media_title: 'New film', media_content_id: 'emby-456',
+  }), { previous });
+  assert.equal(fresh.title, 'New film');
+  assert.equal(fresh.metadataStale, false);
+  assert.equal(fresh.artwork, null);
+  const withPicture = buildDevice(configured(), stateEntity('playing', {
+    ...plexMetadata, app_name: 'Emby', media_title: 'New film', media_content_id: 'emby-456',
+    entity_picture: '/emby.jpg',
+  }), { previous: fresh });
+  assert.equal(withPicture.artwork, '/emby.jpg');
+});
+
+test('empty new-app updates and inactive inherited attributes do not take ownership of old metadata', () => {
+  let previous = buildDevice(configured(), stateEntity('playing', plexMetadata));
+  for (const entity of [
+    stateEntity('off', { ...plexMetadata, app_name: 'Emby' }),
+    stateEntity('playing', { app_name: 'Emby' }),
+    stateEntity('unavailable'),
+    null,
+  ]) previous = buildDevice(configured(), entity, { previous });
+  const inherited = buildDevice(configured(), stateEntity('playing', {
+    ...plexMetadata, app_name: 'Emby',
+  }), { previous });
+  assert.equal(inherited.metadataStale, true);
+  assert.equal(inherited.title, 'Media playing');
+  assert.equal(inherited.artwork, null);
+  assert.equal(inherited.progress, null);
+});
+
+test('metadata history is isolated by entity even when another room previous model is supplied', () => {
+  const den = buildDevice(configured(), stateEntity('playing', plexMetadata));
+  const study = buildDevice(configured('media_player.study'), stateEntity('playing', {
+    ...plexMetadata, app_name: 'Emby',
+  }), { previous: den });
+  assert.equal(study.metadataStale, false);
+  assert.equal(study.title, 'Old Plex film');
+  assert.equal(study.artwork, '/old-plex.jpg');
+  const denSwitch = buildDevice(configured(), stateEntity('playing', {
+    ...plexMetadata, app_name: 'Emby',
+  }), { previous: den });
+  assert.equal(denSwitch.metadataStale, true);
+  const studyUpdate = buildDevice(configured('media_player.study'), stateEntity('paused', {
+    ...plexMetadata, app_name: 'Emby',
+  }), { previous: study });
+  assert.equal(studyUpdate.metadataStale, false);
+  assert.equal(studyUpdate.title, 'Old Plex film');
+});
+
+test('same-app resume and returning to the original app retain legitimate metadata', () => {
+  const first = buildDevice(configured(), stateEntity('playing', plexMetadata));
+  const gap = buildDevice(configured(), stateEntity('off'), { previous: first });
+  const resumed = buildDevice(configured(), stateEntity('paused', plexMetadata), { previous: gap });
+  assert.equal(resumed.metadataStale, false);
+  assert.equal(resumed.title, 'Old Plex film');
+  assert.equal(resumed.artwork, '/old-plex.jpg');
+  assert.equal(resumed.progress.position, 15);
+  const switched = buildDevice(configured(), stateEntity('playing', {
+    ...plexMetadata, app_name: 'Emby',
+  }), { previous: first });
+  const returned = buildDevice(configured(), stateEntity('playing', plexMetadata), { previous: switched });
+  assert.equal(returned.metadataStale, false);
+  assert.equal(returned.title, 'Old Plex film');
+});
+
 test('keeps a selected active device and falls back by status across any device count', () => {
   const devices = [
     { entity: 'media_player.one', status: 'idle', active: false },

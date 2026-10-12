@@ -34,7 +34,7 @@ const STATUS_LABELS = {
 };
 
 const ACTIVE_STATUSES = new Set(['playing', 'paused', 'buffering', 'app', 'on']);
-const SUPPRESSED_METADATA_SIGNATURE = Symbol('suppressed-metadata-signature');
+const METADATA_PROVENANCE = Symbol('metadata-provenance');
 
 function isRecord(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -183,13 +183,11 @@ function rawMetadata(attributes) {
     attributes.media_channel ?? null,
     attributes.media_artist ?? null,
     attributes.media_album_name ?? null,
-    attributes.entity_picture ?? null,
   ];
 }
 
 function signatureOf(value) {
-  // Hash the signature so signed artwork URLs or other raw attributes are not
-  // copied into a publicly rendered card field.
+  // Keep raw item identifiers and signed artwork URLs out of stored signatures.
   const text = JSON.stringify(value);
   let first = 0x811c9dc5;
   let second = 0x9e3779b9;
@@ -279,6 +277,9 @@ function baseResult(device, entity, status) {
 
 /** Convert one configured device and its Home Assistant entity to display data. */
 export function buildDevice(device, entity, { now = Date.now(), previous = null, platform = null } = {}) {
+  // History belongs to one configured entity, even if a caller supplies another
+  // room's previous model.
+  if (previous?.entity !== (device?.entity ?? entity?.entity_id ?? '')) previous = null;
   const rawState = typeof entity?.state === 'string' ? entity.state.toLowerCase() : null;
   if (!entity || typeof entity !== 'object') {
     const missing = baseResult(device, null, 'unavailable');
@@ -286,8 +287,8 @@ export function buildDevice(device, entity, { now = Date.now(), previous = null,
       missing.appIdentity = previous.appIdentity ?? null;
       missing.metadataSignature = previous.metadataSignature ?? missing.metadataSignature;
       missing.metadataStale = Boolean(previous.metadataStale);
-      if (previous[SUPPRESSED_METADATA_SIGNATURE]) {
-        Object.defineProperty(missing, SUPPRESSED_METADATA_SIGNATURE, { value: previous[SUPPRESSED_METADATA_SIGNATURE] });
+      if (previous[METADATA_PROVENANCE]) {
+        Object.defineProperty(missing, METADATA_PROVENANCE, { value: previous[METADATA_PROVENANCE] });
       }
     }
     return missing;
@@ -300,20 +301,33 @@ export function buildDevice(device, entity, { now = Date.now(), previous = null,
   const app = identifyApp(device, attributes, platform);
   const identity = app?.key ?? previous?.appIdentity ?? null;
   const signature = result.metadataSignature;
-  const priorSuppressedSignature = previous?.[SUPPRESSED_METADATA_SIGNATURE]
-    ?? (previous?.metadataStale ? previous.metadataSignature : null);
-  const appChanged = Boolean(previous?.appIdentity && identity && previous.appIdentity !== identity);
   const inactive = state === 'unknown' || state === 'unavailable' || state === 'off' || state === 'idle';
-  let suppressedSignature = priorSuppressedSignature;
-  if (appChanged && previous?.metadataSignature === signature) suppressedSignature = signature;
-  if (!inactive && suppressedSignature && signature !== suppressedSignature) suppressedSignature = null;
-  result.appIdentity = identity;
-  result.metadataStale = Boolean(suppressedSignature && signature === suppressedSignature);
-  if (suppressedSignature) {
-    Object.defineProperty(result, SUPPRESSED_METADATA_SIGNATURE, { value: suppressedSignature });
-  }
+  const history = previous?.[METADATA_PROVENANCE];
+  let programme = history?.programme ?? null;
+  let artwork = history?.artwork ?? null;
+  const hasMetadata = rawMetadata(attributes).some(value =>
+    typeof value === 'string' ? Boolean(value.trim()) : value !== null);
+  const picture = safeImageUrl(attributes.entity_picture);
+  const pictureSignature = picture ? signatureOf(picture) : null;
 
-  // Keep identity and stale-signature history across idle/off transitions, but
+  // Empty snapshots cannot erase the last meaningful source. Progress and
+  // artwork refreshes cannot establish that programme fields belong to a new app.
+  const programmeFromOtherApp = Boolean(programme?.appIdentity && identity && programme.appIdentity !== identity);
+  const artworkFromOtherApp = Boolean(artwork?.appIdentity && identity && artwork.appIdentity !== identity);
+  result.appIdentity = identity;
+  result.metadataStale = programmeFromOtherApp && (!hasMetadata || signature === programme.signature);
+  const artworkStale = artworkFromOtherApp && pictureSignature === artwork.signature;
+  // Attribute initial/same-app inactive data too: HA may first publish retained
+  // fields while idle. Never transfer existing ownership to a different idle app.
+  if (hasMetadata && !result.metadataStale && (!inactive || !programme || programme.appIdentity === identity)) {
+    programme = { appIdentity: identity, signature };
+  }
+  if (picture && !artworkStale && (!inactive || !artwork || artwork.appIdentity === identity)) {
+    artwork = { appIdentity: identity, signature: pictureSignature };
+  }
+  Object.defineProperty(result, METADATA_PROVENANCE, { value: { programme, artwork } });
+
+  // Keep source history across idle/off transitions, but
   // never expose an app label or old media details in those states.
   if (inactive) return result;
 
@@ -361,7 +375,7 @@ export function buildDevice(device, entity, { now = Date.now(), previous = null,
         : (app?.name ?? (state === 'on' ? (device?.name ?? 'Media player on') : 'Media playing')));
     result.detail = metadataStale ? 'Programme information unavailable'
       : (detail ?? 'Programme information unavailable');
-    result.artwork = metadataStale ? null : safeImageUrl(attributes.entity_picture);
+    result.artwork = artworkStale ? null : picture;
     result.progress = metadataStale ? null : progressFor(attributes, state, now);
   }
   if (state === 'playing' && supported(attributes.supported_features, 1)) result.action = 'media_pause';

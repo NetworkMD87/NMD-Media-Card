@@ -4,9 +4,9 @@ Last updated: 2026-10-12
 
 ## 🎯 Next up
 
-[RM-016 — Correct stale metadata across app changes](#rm-016-correct-stale-metadata-across-app-changes).
+[RM-017 — Render research notification fields as literal text](#rm-017-render-research-notification-fields-as-literal-text).
 
-Next action: reproduce the two confirmed metadata defects with focused regression tests, then correct metadata provenance without changing the approved compact presentation. Follow with [literal research notifications](#rm-017-render-research-notification-fields-as-literal-text), [Plex source qualification](#rm-011-finish-plex-silo-and-emby-validation), and [TiviMate guide-tuning evidence](#rm-007-build-and-qualify-the-banner-observer). Qualify real HA behaviour before [supported distribution](#rm-014-prepare-a-supported-distribution); [capture safeguards](#rm-018-qualify-capture-safety-and-viewing-data-handling) gate any sustained capture.
+Next proposed action, awaiting owner selection: correct literal research notifications under RM-017. [RM-016](#rm-016-correct-stale-metadata-across-app-changes) is locally corrected and verified, preserving the approved compact presentation; installed HA app-transition acceptance remains open. Follow with [Plex source qualification](#rm-011-finish-plex-silo-and-emby-validation) and [TiviMate guide-tuning evidence](#rm-007-build-and-qualify-the-banner-observer). Qualify real HA behaviour before [supported distribution](#rm-014-prepare-a-supported-distribution); [capture safeguards](#rm-018-qualify-capture-safety-and-viewing-data-handling) gate any sustained capture.
 
 The shared [ADB/companion feasibility investigation](#rm-020-establish-what-adb-and-a-device-companion-can-observe) supports the Plex and TiviMate items. On 12 October the owner requested recording it for later, explicitly stopping immediate device investigation; do not resume testing or installation until requested.
 
@@ -16,10 +16,10 @@ The [11 October audit](codex://threads/01a12c22-2438-7e90-a190-68fa3ff85f2e) is 
 
 ### RM-016: Correct stale metadata across app changes
 
-- [ ] **P2 — Preserve meaningful metadata provenance through empty inactive gaps.** Plex playing → empty `off`/`idle`/`unavailable` → Emby with inherited attributes can display the old Plex title, artwork and progress as current. Keep the last meaningful source identity independently of empty snapshots. [Affected model](src/media-model.js).
-- [ ] **P2 — Stop artwork-only refreshes validating unrelated programme fields.** After cross-app suppression, changing only `entity_picture` can restore the old title and progress. Track artwork freshness separately from programme/item identity.
-  Done when: focused regressions cover both sequences, old fields remain suppressed, legitimate same-app resume works, and one room cannot affect another. Run relevant model/browser checks; real installed app-transition acceptance remains under RM-011/RM-013.
-- [ ] Reconcile the earlier provenance-fix claim in [VERIFICATION.md](VERIFICATION.md#findings-corrected) with the reproduced gaps and subsequent fix evidence; preserve the historical result and distinguish local from live checks.
+- [x] **P2 — Preserve meaningful metadata provenance through empty inactive gaps.** Corrected locally 12 October 2026: last meaningful programme/artwork sources survive empty and missing snapshots; inherited fields remain suppressed across apps, including metadata first seen while inactive. [Affected model](src/media-model.js).
+- [x] **P2 — Stop artwork-only refreshes validating unrelated programme fields.** Corrected locally 12 October 2026: artwork freshness is independent of programme/item identity; fresh pictures cannot restore old titles/progress, and fresh programme fields cannot restore inherited pictures.
+  Verification: 26 model and 30 Chrome browser checks passed, including same-app resume and room isolation; independent model review found no remaining issues. Installed HA/app-transition acceptance remains under RM-011/RM-013. [Fix evidence](VERIFICATION.md#stale-metadata-correction--12-october-2026).
+- [x] Reconciled the earlier [provenance-fix claim](VERIFICATION.md#findings-corrected) with the reproduced gaps and new local fix evidence, retaining the historical result and live-verification limits.
 
 ### RM-017: Render research notification fields as literal text
 
