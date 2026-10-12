@@ -95,7 +95,7 @@ The card displays information supplied by Home Assistant. It doesn't play or rel
 
 Further real-device testing is still needed for Plex and Emby. Silo compatibility and TiviMate channel information are also unconfirmed. If an integration reports old information, the card may still show it, although it clears details when playback ends and handles detected app changes.
 
-The minimum supported Home Assistant version hasn't been established yet. Further live dashboard testing, phone and tablet testing, a visual configuration editor and HACS distribution are still ahead. The [verification notes](VERIFICATION.md) record the local checks and initial live results.
+The minimum supported Home Assistant version hasn't been established yet. Further live dashboard testing, phone and tablet testing, a visual configuration editor and HACS distribution are still ahead. The [roadmap](ROADMAP.md) tracks remaining work and the next decision; the [verification notes](VERIFICATION.md) record the local checks and initial live results.
 
 ## Run the demo locally
 
