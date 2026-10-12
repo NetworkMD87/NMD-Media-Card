@@ -101,6 +101,17 @@ python -B scripts/research/test-ha-adb-channel-check.py
 
 The parser checks use synthetic XML and an available AWK runtime (`NMD_AWK` can select one); the HA checks use Jinja2 and mocked services/state/clock, compiling every generated template before execution. Source components are `adb-banner-capture.sh` and `adb-banner-fields.awk`; the generator embeds them in the saved action and protects the command with a Jinja raw block so shell literals cannot be interpreted as HA template tags. Rendering preserves the exact original command; no upload/install step is needed. Passing local/device parser checks does not establish actual HA execution, every guide layout, capture rate or continuous current-channel confirmation. No permanent collector is installed.
 
+Both channel-report generators now put programme values in escaped preformatted blocks. Markdown links/images, HTML tags, fence delimiters and multiline content remain literal text. The existing credential-like/URL rejection still applies. Previously saved HA scripts retain their old templates: regenerate and replace the relevant saved script before further notification trials; editing the local generators does not update HA.
+
+The additional offline report regression uses Node.js and test-only Marked alongside the existing Jinja2 harness. Set `NMD_MARKED_MODULE` to an absolute `marked/lib/marked.esm.js` path in the maintainer environment, then run:
+
+```powershell
+$env:NMD_MARKED_MODULE = 'C:\path\to\marked\lib\marked.esm.js'
+python -B scripts/research/test-ha-adb-notification-reports.py
+```
+
+It checks both generated reports with HA's GFM/line-break options and token-by-token parsing, before sanitization. No runtime dependency, HA service, device or provider call is involved. [RM-017 local evidence](../../VERIFICATION.md#literal-research-notification-fields--12-october-2026) records the tested parser version and browser limits.
+
 ## Finite automatic HA channel trial
 
 `ha_adb_channel_trial.py` prepares a manually started trial using the same capture command and field validation as the owner-verified one-shot check:

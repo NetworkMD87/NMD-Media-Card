@@ -4,21 +4,11 @@ Last updated: 2026-10-12
 
 ## 🎯 Next up
 
-[RM-017 — Render research notification fields as literal text](#rm-017-render-research-notification-fields-as-literal-text).
+[RM-011 — Finish Plex, Silo and Emby validation](#rm-011-finish-plex-silo-and-emby-validation).
 
-Recommended next action, awaiting owner selection: correct both notification generators, add focused regressions and inspect rendered output. [RM-016](#rm-016-correct-stale-metadata-across-app-changes) is locally verified; installed HA acceptance remains open under [RM-011](#rm-011-finish-plex-silo-and-emby-validation) and [RM-013](#rm-013-complete-real-dashboard-and-touch-device-acceptance).
+Recommended next action, awaiting owner selection: qualify existing HA/Cast Plex title sources using whitelisted output, then decide on any remaining source/setup gap. RM-016 and RM-017 are locally verified; installed HA acceptance remains open under RM-011 and [RM-013](#rm-013-complete-real-dashboard-and-touch-device-acceptance). Previously saved notification scripts need regeneration before reuse.
 
-Retain the existing order: notification correction, Plex source qualification, then TiviMate guide-tuning evidence. Shared device/companion investigation remains [deferred under RM-020](#rm-020-establish-what-adb-and-a-device-companion-can-observe). Roadmap maintenance does not approve new interfaces, helpers, authentication/backend setup, live changes or publication.
-
----
-
-## 🔧 Planned fixes
-
-### RM-017: Render research notification fields as literal text
-
-- [ ] **P2 — Awaiting owner selection:** correct the [one-shot](scripts/research/ha_adb_channel_check.py) and [finite-trial](scripts/research/ha_adb_channel_trial.py) reports so provider programme text cannot become Markdown links or images.
-  Done when: hostile link/image syntax, protocol-relative URLs, multiline fields and fence delimiters render literally without injected links/images or network requests; focused regressions and rendered-output checks pass.
-  Gate: finish before further notification trials. The [11 October audit](codex://threads/01a12c22-2438-7e90-a190-68fa3ff85f2e) reproduced parser/template acceptance, not a live HA network effect, credential theft or code execution.
+Retain the remaining order: Plex source qualification, then TiviMate guide-tuning evidence. Shared device/companion investigation remains [deferred under RM-020](#rm-020-establish-what-adb-and-a-device-companion-can-observe). Roadmap maintenance does not approve new interfaces, helpers, authentication/backend setup, live changes or publication.
 
 ---
 
@@ -130,6 +120,11 @@ The finite ADB-first trial was approved under [RM-006](#rm-006-decide-on-the-liv
 ---
 
 ## ✅ Completed checkpoints
+
+### RM-017: Render research notification fields as literal text
+
+- [x] **Locally verified — 12 October 2026.** Both notification generators render provider fields literally; 20 existing template/sequence tests, 24 rendered report cases, local Chrome checks and independent review passed.
+  No injected links/images or browser requests; saved HA scripts remain unchanged and need regeneration before reuse. [Fix evidence and installed-HA limits](VERIFICATION.md#literal-research-notification-fields--12-october-2026).
 
 ### RM-016: Correct stale metadata across app changes
 

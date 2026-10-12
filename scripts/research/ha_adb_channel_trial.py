@@ -5,19 +5,24 @@ remote input or writes channel metadata. Output is JSON, which is valid YAML.
 """
 import argparse
 import json
-from ha_adb_channel_check import ha_check
+from ha_adb_channel_check import LITERAL_FIELD, ha_check
 
 NORMAL_STATUSES = ["banner", "guide", "no_banner"]
 
-REPORT = """NMD finite ADB channel trial — {{ nmd_reason }}
+REPORT = LITERAL_FIELD + """NMD finite ADB channel trial — {{ nmd_reason }}
 {{ nmd_rows | length }} of 8 attempts; {{ (as_timestamp(now()) - nmd_started) | round(1) }} seconds total.
 Playback banner samples: {{ nmd_rows | selectattr('fresh') | selectattr('status', 'equalto', 'banner') | list | length }}.
 Banner samples are not switch counts; continuous current-channel tracking is unconfirmed.
 {% for row in nmd_rows %}
 Attempt {{ row.attempt }} at +{{ row.at_s }}s: {{ row.status }}; fresh={{ row.fresh }}; sample={{ row.sample or 'none' }}; device={{ row.device_ms }}ms; HA action={{ row.action_ms }}ms.{% if row.status == 'banner' and row.fresh %}
-Channel: {{ row.channel | replace('&', '&amp;') | replace('<', '&lt;') | replace('>', '&gt;') }}
-Current: {{ row.title | replace('&', '&amp;') | replace('<', '&lt;') | replace('>', '&gt;') }}
-Schedule: {{ row.schedule | replace('&', '&amp;') | replace('<', '&lt;') | replace('>', '&gt;') }}{% endif %}
+
+{{ literal_field('Channel', row.channel) }}
+
+{{ literal_field('Current', row.title) }}
+
+{{ literal_field('Schedule', row.schedule) }}
+
+{% endif %}
 {% endfor %}Banner fields are guide values. A banner sample is not proof of a channel switch or continuous current channel.
 No remote input or metadata-state update."""
 

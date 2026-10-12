@@ -57,10 +57,18 @@ VALIDATE = """{% set ns = namespace(valid=false) %}
 {% endif %}
 {{ ns.valid }}"""
 
-REPORT = """{% if nmd_status == 'banner' %}
+# Preformatted HTML disables Markdown parsing/autolinking. Escape ampersands
+# first so entity-looking text and attempted closing tags stay literal too.
+# Unlike Markdown fences, provider backticks/tildes cannot end this block.
+LITERAL_FIELD = """{% macro literal_field(label, value) -%}
+<pre>{{ label }}: {{ value | replace('&', '&amp;') | replace('<', '&lt;') | replace('>', '&gt;') }}</pre>
+{%- endmacro %}"""
+
+REPORT = LITERAL_FIELD + """{% if nmd_status == 'banner' %}
 Playback banner captured — fresh=True.
 {% for label, name in [('Channel', 'channel'), ('Current', 'title'), ('Schedule', 'schedule'), ('Remaining', 'remaining'), ('Description', 'description'), ('Next', 'next_title'), ('Next schedule', 'next_schedule')] %}
-{{ label }}: {{ nmd_data.fields[name] | replace('&', '&amp;') | replace('<', '&lt;') | replace('>', '&gt;') }}
+{{ literal_field(label, nmd_data.fields[name]) }}
+
 {% endfor %}
 These are banner guide values, not playback position or continuous channel confirmation.
 {% elif nmd_status == 'guide' %}
