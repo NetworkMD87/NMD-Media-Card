@@ -124,6 +124,24 @@ test('shows active media title, episode and channel details with safe artwork', 
   assert.equal(sourceOnly.detail, 'Programme information unavailable');
 });
 
+test('Silo with a current title omits missing programme details without losing playback data', () => {
+  for (const state of ['playing', 'paused']) {
+    const attrs = { app_name: 'Silo', media_title: 'Shelby Oaks', media_position: 1814,
+      media_duration: 5452, supported_features: 16385 };
+    const result = buildDevice(configured(), stateEntity(state, attrs));
+    assert.equal(result.title, 'Shelby Oaks');
+    assert.equal(result.detail, null);
+    assert.equal(result.artwork, null);
+    assert.ok(result.progress);
+    assert.equal(result.action, state === 'playing' ? 'media_pause' : 'media_play');
+    assert.equal(buildDevice(configured(), stateEntity(state, { ...attrs, media_channel: 'Channel' })).detail, 'Channel');
+    assert.equal(buildDevice(configured(), stateEntity(state, { ...attrs, media_title: '' })).detail, 'Programme information unavailable');
+    const previous = buildDevice(configured(), stateEntity(state, { ...attrs, app_name: 'Plex' }));
+    assert.equal(previous.detail, 'Programme information unavailable');
+    assert.equal(buildDevice(configured(), stateEntity(state, attrs), { previous }).detail, 'Programme information unavailable');
+  }
+});
+
 test('treats on as unknown playback and never carries programme metadata forward', () => {
   const attrs = {
     app_name: 'TiviMate',

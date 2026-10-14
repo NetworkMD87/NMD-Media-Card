@@ -1,12 +1,14 @@
 # NMD Media Card roadmap
 
-Last updated: 2026-10-12
+Last updated: 2026-10-13
 
 ## 🎯 Next up
 
 [RM-011 — Finish Plex, Silo and Emby validation](#rm-011-finish-plex-silo-and-emby-validation).
 
-Recommended next action, awaiting owner selection: qualify existing HA/Cast Plex title sources using whitelisted output, then decide on any remaining source/setup gap. RM-016 and RM-017 are locally verified; installed HA acceptance remains open under RM-011 and [RM-013](#rm-013-complete-real-dashboard-and-touch-device-acceptance). Previously saved notification scripts need regeneration before reuse.
+Plex movie/episode HA and direct raw Cast checks are complete: titles are empty in the receiver replies, with artwork/progress and a library metadata reference present. Recommended next action, awaiting owner selection: scope protected known-item lookup, agreeing credential handling and explicit server/item association before any requests or setup changes. Shared-user access remains unverified. [Entity comparison](VERIFICATION.md#plex-movie-and-episode-ha-field-check--12-october-2026) · [Raw Cast evidence](VERIFICATION.md#plex-raw-cast-status-check--12-october-2026).
+
+RM-016 and RM-017 are locally verified; installed HA acceptance remains open under RM-011 and [RM-013](#rm-013-complete-real-dashboard-and-touch-device-acceptance). Previously saved notification scripts need regeneration before reuse.
 
 Retain the remaining order: Plex source qualification, then TiviMate guide-tuning evidence. Shared device/companion investigation remains [deferred under RM-020](#rm-020-establish-what-adb-and-a-device-companion-can-observe). Roadmap maintenance does not approve new interfaces, helpers, authentication/backend setup, live changes or publication.
 
@@ -76,8 +78,12 @@ The finite ADB-first trial was approved under [RM-006](#rm-006-decide-on-the-liv
 
 ### RM-011: Finish Plex, Silo and Emby validation
 
-- [ ] **Plex title source unresolved; Silo/Emby untested:** qualify existing HA/Cast fields and underlying Cast data with whitelisted output. Plex artwork/progress worked in the owner comparison, but observed parent/child titles and passive session-description/playback-UI sources were empty.
-  Use RM-020 for full Android metadata/callback access; it remains deferred. Empty observations do not rule out every metadata key, and an overlay is not continuous delivery. [Plex evidence](VERIFICATION.md#plex-entity-comparison--11-october-2026) · [Source limits](VERIFICATION.md#plex-title-source-availability--11-october-2026).
+- **Silo update — 13 October:** owner screenshot shows a paused title and progress with no artwork. Locally removed the missing-programme-details fallback when Silo has a current title; real details and stale/missing-title fallbacks remain. Installed acceptance of this change and broader Silo testing remain open. [Local evidence](VERIFICATION.md#silo-title-only-detail--13-october-2026).
+- [ ] **Investigate Silo metadata:** inspect what existing HA entities and available Cast data expose beyond the observed title/progress, especially artwork, descriptions, series/season/episode details, duration, item identity and supported controls. Establish whether missing artwork is absent at the source or not reaching the card.
+- [ ] **Investigate Emby metadata:** perform the same field/source comparison for movie and episode playback; record what the card can already use, what needs a bounded mapping change and what would require additional setup.
+  Done when, for each app: record available/missing fields, source and app/device versions, freshness across item/app changes, and practical card uses with setup/access limitations. Prefer existing ordinary-user sources; document gaps without assuming unavailable data or approving new integrations, credentials, helpers or UI changes. Full Android/companion investigation remains deferred under RM-020.
+- [ ] **Plex title source unresolved; Silo/Emby untested:** three owner-run HA readings and two serial-verified direct raw Cast checks on 12 October found empty titles and no recognised series/episode details. Movie and episode receiver replies both had movie metadata type, artwork/progress and a library metadata reference; no recognised title fields were found in custom data. This does not qualify every possible vendor field or other Android source. Existing standard Cast fields cannot supply titles in these samples; a lookup/setup decision remains separate. [Entity comparison](VERIFICATION.md#plex-movie-and-episode-ha-field-check--12-october-2026) · [Raw Cast evidence and limits](VERIFICATION.md#plex-raw-cast-status-check--12-october-2026).
+  Earlier passive session-description/playback-UI sources were empty. Use RM-020 for full Android metadata/callback access; it remains deferred. Empty observations do not rule out every metadata key, and an overlay is not continuous delivery. [Earlier Plex evidence](VERIFICATION.md#plex-entity-comparison--11-october-2026) · [Source limits](VERIFICATION.md#plex-title-source-availability--11-october-2026).
 - [ ] If existing sources are insufficient, seek a decision on protected known-item lookup using deliberately authorised credentials, explicit server/item association and server discovery; prefer an approved HA-side location. Never place tokens in dashboard configuration or extract artwork tokens.
   Done when: a movie and episode resolve correctly; inaccessible items, wrong servers and delayed results after device/app/session/item changes are rejected; failures preserve working artwork/progress/controls. Bind requests to device, app/session generation, server and item; titles, images, duration and friendly names are insufficient identifiers.
   Ordinary-user access is the priority. The separate non-admin account test is on hold; no account creation is required and shared-user compatibility remains unknown. Rank existing HA/Cast, known-item lookup, qualified Plex Companion timeline discovery/binding/authentication, fuller Android metadata where needed, then the admin-only HA integration as last fallback. No candidate is qualified. [Investigation and owner decisions](VERIFICATION.md#plex-ordinary-user-source-investigation--11-october-2026).
