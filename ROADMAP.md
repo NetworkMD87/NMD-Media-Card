@@ -4,15 +4,32 @@ Last updated: 2026-10-19
 
 ## 🎯 Next up
 
-[RM-011 — Finish Plex, Silo and Emby validation](#rm-011-finish-plex-silo-and-emby-validation).
+[RM-022 — Diagnose and resolve Silo playback controls](#rm-022-diagnose-and-resolve-silo-playback-controls) — **Paused for the night at the owner's request, 19 October.** The Android TV Remote/ADB entity-listing template was **not run**. When the owner resumes, start with that read-only inventory; playback testing comes after identifying the Living Room target.
 
-The approved Satoshi title, brighter artwork and translucent playback control are locally verified; the title-only fallback now applies across apps. Next acceptance step: inspect the updated card in installed HA after a separately authorised installation/update. [Polish evidence and font packaging limit](VERIFICATION.md#title-and-playback-polish--19-october-2026) · [RM-013](#rm-013-complete-real-dashboard-and-touch-device-acceptance).
+The approved artwork crop remains queued under [RM-021](#rm-021-crop-right-edge-artwork-overlays). Preserve the remaining order: [Plex source qualification](#rm-011-finish-plex-silo-and-emby-validation), then [TiviMate guide-tuning evidence](#rm-007-build-and-qualify-the-banner-observer). The broader device/companion investigation remains [deferred](#rm-020-establish-what-adb-and-a-device-companion-can-observe).
 
-Plex movie/episode HA and direct raw Cast checks are complete: titles are empty in the receiver replies, with artwork/progress and a library metadata reference present. Recommended next action, awaiting owner selection: scope protected known-item lookup, agreeing credential handling and explicit server/item association before any requests or setup changes. Shared-user access remains unverified. [Entity comparison](VERIFICATION.md#plex-movie-and-episode-ha-field-check--12-october-2026) · [Raw Cast evidence](VERIFICATION.md#plex-raw-cast-status-check--12-october-2026).
+Roadmap maintenance does not approve new helpers, configuration changes, deployment or publication.
 
-RM-016 and RM-017 are locally verified; installed HA acceptance remains open under RM-011 and [RM-013](#rm-013-complete-real-dashboard-and-touch-device-acceptance). Previously saved notification scripts need regeneration before reuse.
+---
 
-Retain the remaining order: Plex source qualification, then TiviMate guide-tuning evidence. Shared device/companion investigation remains [deferred under RM-020](#rm-020-establish-what-adb-and-a-device-companion-can-observe). Roadmap maintenance does not approve new interfaces, helpers, authentication/backend setup, live changes or publication.
+## 🚧 Current investigation
+
+### RM-022: Diagnose and resolve Silo playback controls
+
+- [ ] **Paused; fault unresolved — 19 October:** neither NMD nor the stock card pauses Silo. Direct `media_player.media_pause` to `media_player.shield_2` (Google Cast) reports HA success but playback continues; the physical remote pauses/resumes correctly. The failure occurs without either card or the universal parent. No control-code regression was found; the exact failing component is unproven.
+  [Investigation, source comparison and local/live evidence](VERIFICATION.md#silo-pause-investigation--19-october-2026).
+- [ ] **Next, when the owner resumes:** run the read-only Android TV Remote/ADB entity inventory and identify the Living Room Shield target. The last supplied template was not run; no alternative control route has been tested. [Resume instructions](VERIFICATION.md#silo-pause-resume-point--19-october-2026).
+- [ ] Test a verified existing control route during an owner-arranged playback session; record actual pause/resume and HA state feedback. Keeping Cast metadata with Android TV Remote/ADB controls is a recommendation only. Inspect the universal player's configuration before proposing a bounded correction; no fallback, new integration or live configuration change is approved or implemented.
+  Done when: the cause or demonstrated transport limitation is documented, any separately approved correction is verified through the installed card for pause and resume, title/artwork/progress remain correct, and relevant existing playback controls still work. Keep unresolved app/device coverage explicit; local mock actions alone do not close this issue.
+
+---
+
+## 🎨 Approved visual follow-up
+
+### RM-021: Crop right-edge artwork overlays
+
+- [ ] **Approved and queued — 19 October:** crop approximately 10% from the artwork's right edge and favour left alignment to hide embedded ratings/provider marks. Preserve the original image and keep the card's app logo, title and playback control in their current positions. Do not implement during the pause investigation.
+  Done when: preview the actual card at desktop and narrow widths, confirm the observed right-edge marks are outside the visible area, and check normal images and long titles; document the loss of some right-edge artwork and avoid claiming every overlay layout is removed. Live rollout remains a separate step after local review.
 
 ---
 
@@ -21,7 +38,7 @@ Retain the remaining order: Plex source qualification, then TiviMate guide-tunin
 ### RM-020: Establish what ADB and a device companion can observe
 
 - [ ] **Deferred by owner on 12 October:** resume only when requested. The owner is open to ADB or an installed diagnostic app, but no permanent helper is approved.
-  Only the ADB connection inventory was read before stopping; no target/playback verification, media-session/UI capture, installation or playback change occurred.
+  At the 12 October deferral, only the ADB connection inventory had been read. Later bounded Silo observations are recorded under RM-011/RM-022; they do not reopen this broader investigation or approve a companion.
 - [ ] Compare bounded ADB observations on the identity-verified intended Shield: full published media-session metadata, playback state/actions, app/context and interface nodes/markers. Print only safe fields; exclude raw dumps, credentials and private URLs.
   A dump summary may omit Android API fields; shell privileges may exceed ordinary-app access.
 - [ ] If material questions remain, scope a minimal diagnostic companion to compare media-session callbacks and accessibility events/nodes with ordinary user-granted access. Measure event-driven delivery against periodic capture before claiming better speed or lower overhead.
@@ -80,11 +97,12 @@ The finite ADB-first trial was approved under [RM-006](#rm-006-decide-on-the-liv
 
 ### RM-011: Finish Plex, Silo and Emby validation
 
-- **Silo update — 13 October:** owner screenshot shows a paused title and progress with no artwork. Locally removed the missing-programme-details fallback when Silo has a current title; real details and stale/missing-title fallbacks remain. Installed acceptance of this change and broader Silo testing remain open. [Local evidence](VERIFICATION.md#silo-title-only-detail--13-october-2026).
+- [ ] **Silo control acceptance blocked:** [RM-022](#rm-022-diagnose-and-resolve-silo-playback-controls) owns the pause investigation and resume point; retain this live acceptance gate until its installed control checks pass.
+- **Silo title fallback — 13 October, superseded by 19 October polish:** the earlier local title-only fix is covered by the broader current-title behavior. Owner accepted the installed appearance on 19 October; episode/transition and functional acceptance remain open. [Earlier evidence](VERIFICATION.md#silo-title-only-detail--13-october-2026) · [Installed appearance](VERIFICATION.md#polish-install-package--19-october-2026).
 - [ ] **Investigate Silo metadata — partial evidence, 19 October:** the owner screenshot confirms title/artwork/progress in the installed card. Two serial-verified, read-only Cast samples for Haunt supplied title, one HTTPS image address and advancing progress/duration; Android also exposed the title. No description/episode details were supplied in this movie's Cast metadata. Episode playback, item/app changes and broader freshness remain untested. [Evidence](VERIFICATION.md#silo-playback-source-check--19-october-2026).
 - [ ] **Investigate Emby metadata:** perform the same field/source comparison for movie and episode playback; record what the card can already use, what needs a bounded mapping change and what would require additional setup.
   Done when, for each app: record available/missing fields, source and app/device versions, freshness across item/app changes, and practical card uses with setup/access limitations. Prefer existing ordinary-user sources; document gaps without assuming unavailable data or approving new integrations, credentials, helpers or UI changes. Full Android/companion investigation remains deferred under RM-020.
-- [ ] **Plex title source unresolved; Emby untested:** three owner-run HA readings and two serial-verified direct raw Cast checks on 12 October found empty titles and no recognised series/episode details. Movie and episode receiver replies both had movie metadata type, artwork/progress and a library metadata reference; no recognised title fields were found in custom data. This does not qualify every possible vendor field or other Android source. Existing standard Cast fields cannot supply titles in these samples; a lookup/setup decision remains separate. [Entity comparison](VERIFICATION.md#plex-movie-and-episode-ha-field-check--12-october-2026) · [Raw Cast evidence and limits](VERIFICATION.md#plex-raw-cast-status-check--12-october-2026).
+- [ ] **Plex title source unresolved:** three owner-run HA readings and two serial-verified direct raw Cast checks on 12 October found empty titles and no recognised series/episode details. Movie and episode receiver replies both had movie metadata type, artwork/progress and a library metadata reference; no recognised title fields were found in custom data. This does not qualify every possible vendor field or other Android source. Existing standard Cast fields cannot supply titles in these samples; a lookup/setup decision remains separate. [Entity comparison](VERIFICATION.md#plex-movie-and-episode-ha-field-check--12-october-2026) · [Raw Cast evidence and limits](VERIFICATION.md#plex-raw-cast-status-check--12-october-2026).
   Earlier passive session-description/playback-UI sources were empty. Use RM-020 for full Android metadata/callback access; it remains deferred. Empty observations do not rule out every metadata key, and an overlay is not continuous delivery. [Earlier Plex evidence](VERIFICATION.md#plex-entity-comparison--11-october-2026) · [Source limits](VERIFICATION.md#plex-title-source-availability--11-october-2026).
 - [ ] If existing sources are insufficient, seek a decision on protected known-item lookup using deliberately authorised credentials, explicit server/item association and server discovery; prefer an approved HA-side location. Never place tokens in dashboard configuration or extract artwork tokens.
   Done when: a movie and episode resolve correctly; inaccessible items, wrong servers and delayed results after device/app/session/item changes are rejected; failures preserve working artwork/progress/controls. Bind requests to device, app/session generation, server and item; titles, images, duration and friendly names are insufficient identifiers.
@@ -98,7 +116,8 @@ The finite ADB-first trial was approved under [RM-006](#rm-006-decide-on-the-liv
 
 ### RM-013: Complete real dashboard and touch-device acceptance
 
-- **Locally verified — 19 October:** approved title/artwork/control polish passed 27 model tests, 30 existing browser checks, focused font-failure/motion/control checks and independent code review. Installed HA and phone/tablet acceptance remain open. [Evidence](VERIFICATION.md#title-and-playback-polish--19-october-2026).
+- **Locally verified — 19 October:** approved title/artwork/control polish passed 27 model tests, 30 existing browser checks, focused font-failure/motion/control checks and independent code review. Installed functional and phone/tablet acceptance remain open; desktop appearance acceptance is recorded below. [Evidence](VERIFICATION.md#title-and-playback-polish--19-october-2026).
+- **Installed appearance accepted; controls unresolved — 19 October:** after extracting all 14 files and following the resource switch/reload steps, owner screenshots show the updated title, brighter artwork, removed generic detail and translucent control; owner says it looks much better. This establishes desktop visual acceptance, not independent font/network verification. Pause failed in the owner's Silo test; [RM-022](#rm-022-diagnose-and-resolve-silo-playback-controls) owns that investigation. [Install handoff](VERIFICATION.md#polish-install-package--19-october-2026).
 - [ ] **Awaiting installed phone/tablet testing:** qualify light/dark themes, room switching, multiple active rooms, realistic/long/missing metadata, unavailable entities and failing controls. Only initial desktop HA evidence exists.
 - [ ] Qualify keyboard/screen-reader use, focus retention, touch targets and narrow layouts in installed HA; local 320px/44px checks do not establish physical or assistive-technology acceptance.
 - [ ] Qualify HA lifecycle/reconfiguration/reconnect, pending/failed service calls, malformed/missing progress and timestamps, and actual app transitions with RM-016. Retain duplicate-action protection, explicit entity targets, image fallbacks and disconnect cleanup; add coverage only for newly reproduced gaps. No timer leak was found in the audit.
