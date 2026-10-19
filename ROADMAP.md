@@ -1,10 +1,12 @@
 # NMD Media Card roadmap
 
-Last updated: 2026-10-13
+Last updated: 2026-10-19
 
 ## 🎯 Next up
 
 [RM-011 — Finish Plex, Silo and Emby validation](#rm-011-finish-plex-silo-and-emby-validation).
+
+The approved Satoshi title, brighter artwork and translucent playback control are locally verified; the title-only fallback now applies across apps. Next acceptance step: inspect the updated card in installed HA after a separately authorised installation/update. [Polish evidence and font packaging limit](VERIFICATION.md#title-and-playback-polish--19-october-2026) · [RM-013](#rm-013-complete-real-dashboard-and-touch-device-acceptance).
 
 Plex movie/episode HA and direct raw Cast checks are complete: titles are empty in the receiver replies, with artwork/progress and a library metadata reference present. Recommended next action, awaiting owner selection: scope protected known-item lookup, agreeing credential handling and explicit server/item association before any requests or setup changes. Shared-user access remains unverified. [Entity comparison](VERIFICATION.md#plex-movie-and-episode-ha-field-check--12-october-2026) · [Raw Cast evidence](VERIFICATION.md#plex-raw-cast-status-check--12-october-2026).
 
@@ -79,10 +81,10 @@ The finite ADB-first trial was approved under [RM-006](#rm-006-decide-on-the-liv
 ### RM-011: Finish Plex, Silo and Emby validation
 
 - **Silo update — 13 October:** owner screenshot shows a paused title and progress with no artwork. Locally removed the missing-programme-details fallback when Silo has a current title; real details and stale/missing-title fallbacks remain. Installed acceptance of this change and broader Silo testing remain open. [Local evidence](VERIFICATION.md#silo-title-only-detail--13-october-2026).
-- [ ] **Investigate Silo metadata:** inspect what existing HA entities and available Cast data expose beyond the observed title/progress, especially artwork, descriptions, series/season/episode details, duration, item identity and supported controls. Establish whether missing artwork is absent at the source or not reaching the card.
+- [ ] **Investigate Silo metadata — partial evidence, 19 October:** the owner screenshot confirms title/artwork/progress in the installed card. Two serial-verified, read-only Cast samples for Haunt supplied title, one HTTPS image address and advancing progress/duration; Android also exposed the title. No description/episode details were supplied in this movie's Cast metadata. Episode playback, item/app changes and broader freshness remain untested. [Evidence](VERIFICATION.md#silo-playback-source-check--19-october-2026).
 - [ ] **Investigate Emby metadata:** perform the same field/source comparison for movie and episode playback; record what the card can already use, what needs a bounded mapping change and what would require additional setup.
   Done when, for each app: record available/missing fields, source and app/device versions, freshness across item/app changes, and practical card uses with setup/access limitations. Prefer existing ordinary-user sources; document gaps without assuming unavailable data or approving new integrations, credentials, helpers or UI changes. Full Android/companion investigation remains deferred under RM-020.
-- [ ] **Plex title source unresolved; Silo/Emby untested:** three owner-run HA readings and two serial-verified direct raw Cast checks on 12 October found empty titles and no recognised series/episode details. Movie and episode receiver replies both had movie metadata type, artwork/progress and a library metadata reference; no recognised title fields were found in custom data. This does not qualify every possible vendor field or other Android source. Existing standard Cast fields cannot supply titles in these samples; a lookup/setup decision remains separate. [Entity comparison](VERIFICATION.md#plex-movie-and-episode-ha-field-check--12-october-2026) · [Raw Cast evidence and limits](VERIFICATION.md#plex-raw-cast-status-check--12-october-2026).
+- [ ] **Plex title source unresolved; Emby untested:** three owner-run HA readings and two serial-verified direct raw Cast checks on 12 October found empty titles and no recognised series/episode details. Movie and episode receiver replies both had movie metadata type, artwork/progress and a library metadata reference; no recognised title fields were found in custom data. This does not qualify every possible vendor field or other Android source. Existing standard Cast fields cannot supply titles in these samples; a lookup/setup decision remains separate. [Entity comparison](VERIFICATION.md#plex-movie-and-episode-ha-field-check--12-october-2026) · [Raw Cast evidence and limits](VERIFICATION.md#plex-raw-cast-status-check--12-october-2026).
   Earlier passive session-description/playback-UI sources were empty. Use RM-020 for full Android metadata/callback access; it remains deferred. Empty observations do not rule out every metadata key, and an overlay is not continuous delivery. [Earlier Plex evidence](VERIFICATION.md#plex-entity-comparison--11-october-2026) · [Source limits](VERIFICATION.md#plex-title-source-availability--11-october-2026).
 - [ ] If existing sources are insufficient, seek a decision on protected known-item lookup using deliberately authorised credentials, explicit server/item association and server discovery; prefer an approved HA-side location. Never place tokens in dashboard configuration or extract artwork tokens.
   Done when: a movie and episode resolve correctly; inaccessible items, wrong servers and delayed results after device/app/session/item changes are rejected; failures preserve working artwork/progress/controls. Bind requests to device, app/session generation, server and item; titles, images, duration and friendly names are insufficient identifiers.
@@ -96,6 +98,7 @@ The finite ADB-first trial was approved under [RM-006](#rm-006-decide-on-the-liv
 
 ### RM-013: Complete real dashboard and touch-device acceptance
 
+- **Locally verified — 19 October:** approved title/artwork/control polish passed 27 model tests, 30 existing browser checks, focused font-failure/motion/control checks and independent code review. Installed HA and phone/tablet acceptance remain open. [Evidence](VERIFICATION.md#title-and-playback-polish--19-october-2026).
 - [ ] **Awaiting installed phone/tablet testing:** qualify light/dark themes, room switching, multiple active rooms, realistic/long/missing metadata, unavailable entities and failing controls. Only initial desktop HA evidence exists.
 - [ ] Qualify keyboard/screen-reader use, focus retention, touch targets and narrow layouts in installed HA; local 320px/44px checks do not establish physical or assistive-technology acceptance.
 - [ ] Qualify HA lifecycle/reconfiguration/reconnect, pending/failed service calls, malformed/missing progress and timestamps, and actual app transitions with RM-016. Retain duplicate-action protection, explicit entity targets, image fallbacks and disconnect cleanup; add coverage only for newly reproduced gaps. No timer leak was found in the audit.
@@ -108,6 +111,7 @@ The finite ADB-first trial was approved under [RM-006](#rm-006-decide-on-the-liv
 
 - [ ] **Awaiting defect closure and live compatibility:** establish supported HA versions, installation/update/cache-refresh instructions and explicit metadata/research/device limitations. No stable release or HACS package exists.
 - [ ] Verify a complete package includes the entry module, imported `src/` modules and assets; qualify updates and cache refresh.
+  Satoshi is available locally but excluded from Git under its redistribution restrictions. Resolve font distribution rights or document each user's own download before packaging; preserve the dashboard-font fallback. [Font notice](assets/NOTICE.md#local-title-font).
 - [ ] Resolve TiviMate redistribution permission and include [asset notices](assets/NOTICE.md) and the restrictive custom [licence](LICENSE); local logo acceptance is not redistribution approval.
 - [ ] Document reproducible maintainer/offline-research checks and prerequisites; reconcile claims with RM-016/RM-017 and separate local, native HA and physical-device evidence. No npm runtime dependencies were found; packaging does not justify a framework.
   Gates: close confirmed defects and qualify RM-011–RM-013. Publication requires a separate owner request; the source checkpoint is not a stable release.

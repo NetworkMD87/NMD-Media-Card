@@ -16,6 +16,8 @@ If you'd like to try the development version, copy these files and folders into 
 
 Keep the folder structure intact. Add `/local/nmd-media-card/nmd-media-card.js` as a **JavaScript module** in your dashboard resources, then add a manual card using the example below.
 
+For the Satoshi Bold title font, obtain your own copy from [Fontshare](https://www.fontshare.com/fonts/satoshi) and place its unmodified `Fonts/WEB/fonts/Satoshi-Bold.woff2` at `assets/fonts/Satoshi-Bold.woff2`. The owner's local copy is present, but the font is excluded from Git because its licence restricts redistribution. Without it, the card uses your dashboard font. See the [font notice and licence](assets/NOTICE.md#local-title-font).
+
 ## Set up your rooms
 
 Replace the example entities with your own media players:

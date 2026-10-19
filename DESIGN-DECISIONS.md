@@ -11,6 +11,14 @@ Owner approved the featured-room design and subsequent artwork/logo revisions on
 - Supported play/pause, slim read-only progress, and retained paused content.
 - Responsive to the card container. The 520px preview was explored; it is not a fixed production width.
 
+### Approved title and playback polish — 19 October 2026
+
+- Featured titles use locally hosted Satoshi Bold, 24px, subtly tightened spacing and a soft shadow; other labels retain the dashboard font. Titles wrap without covering the control; unusually long titles may grow the card rather than lose text.
+- Artwork has a lighter right-hand fade, retaining shading behind text and progress.
+- Omit the generic unavailable-detail line when a valid current title exists, across apps. Retain genuine episode/channel details, missing-title fallbacks and stale-data warnings; no synopsis is added.
+- Use a 48px translucent play/pause circle, faint border and 22px white icon, with hover/press feedback, visible keyboard focus and reduced-motion support. Existing actions and pending/error handling remain.
+- This approval covers local implementation and verification; installed HA acceptance remains open. The local Satoshi font has separate redistribution restrictions in [asset notices](assets/NOTICE.md).
+
 ## First local implementation boundaries
 
 Standard Home Assistant media-player entities, configured explicitly per room. No guessed child players or server session association. Repeated preview rows support additional devices; each active room adds one compact row. No new menus, remote-control panel or editor have been added.

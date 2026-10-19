@@ -2,6 +2,8 @@
 /.playwright-cli/
 /output/
 node_modules/
+# Local Satoshi copy: Fontshare permits self-hosting but restricts redistribution.
+/assets/fonts/Satoshi-Bold.woff2
 .env
 .env.*
 !.env.example

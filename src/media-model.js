@@ -374,7 +374,7 @@ export function buildDevice(device, entity, { now = Date.now(), previous = null,
         ? candidateTitle.trim()
         : (app?.name ?? (state === 'on' ? (device?.name ?? 'Media player on') : 'Media playing')));
     result.detail = metadataStale ? 'Programme information unavailable'
-      : (detail ?? (app?.key === 'silo' && hasTitle ? null : 'Programme information unavailable'));
+      : (detail ?? (hasTitle ? null : 'Programme information unavailable'));
     result.artwork = artworkStale ? null : picture;
     result.progress = metadataStale ? null : progressFor(attributes, state, now);
   }

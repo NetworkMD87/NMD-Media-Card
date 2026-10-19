@@ -18,6 +18,7 @@
   <div class="samples">
     <h2>Idle</h2><nmd-media-card id="idle"></nmd-media-card>
     <h2>One device playing</h2><nmd-media-card id="single"></nmd-media-card>
+    <h2>Silo movie · title only</h2><nmd-media-card id="movie"></nmd-media-card>
     <h2>Multiple devices playing</h2><nmd-media-card id="multi"></nmd-media-card>
     <h2>TiviMate · app-only information</h2><nmd-media-card id="limited"></nmd-media-card>
     <h2>Missing or unavailable devices</h2><nmd-media-card id="unavailable"></nmd-media-card>
@@ -37,6 +38,7 @@
   const fixtures = {
     idle:{[a]:empty(a,'idle'),[b]:empty(b,'off')},
     single:{[a]:first,[b]:empty(b,'off')},
+    movie:{[a]:playing(a,'Silo','A Place Beyond','/demo/beyond.svg'),[b]:empty(b,'off')},
     multi:{[a]:first,[b]:second},
     limited:{[a]:{entity_id:a,state:'playing',attributes:{app_name:'TiviMate',assumed_state:true}},[b]:empty(b,'off')},
     unavailable:{[a]:empty(a,'unavailable')},

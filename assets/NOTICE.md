@@ -13,3 +13,9 @@ TiviMate's blue `tv` symbol was retrieved on 11 October 2026 from its official w
 Silo's unmodified square project icon was retrieved on 11 October 2026 from https://siloserver.org/brand/silo-project-icon.png . The official [brand guide](https://siloserver.org/brand) recommends it for compact square placements and integrations. Copyright (c) 2026 Silo Media L.L.C.; the mark is a Silo trademark, not NMD artwork. This is a referential application label, not the card's own identity or an endorsement. The supplied [SILO-BRAND-NOTICE.txt](SILO-BRAND-NOTICE.txt) is included; its referential-use permission applies rather than the AGPL licence for Silo's source code.
 
 The demo landscape SVGs are original geometric sample artwork; they do not represent real programmes.
+
+## Local title font
+
+Satoshi Bold by Indian Type Foundry was downloaded unmodified from [Fontshare](https://www.fontshare.com/fonts/satoshi) on 19 October 2026. The local `fonts/Satoshi-Bold.woff2` (26,728 bytes) uses the supplied [ITF Free Font License 2.0](fonts/SATOSHI-LICENSE.txt). It permits the owner's self-hosted use but restricts redistribution, including through repositories. The font binary is therefore ignored by Git; it is not covered by the NMD licence and must not be included in a published source/package without resolving distribution rights. Another user must obtain their own copy from Fontshare. Keep the original file unmodified; do not subset or convert it.
+
+For this local installation, copy the font with the card's other assets. If it is absent or fails to load, titles use the dashboard font at the same size and weight. The card makes no font-service requests. Public packaging remains gated separately under RM-014.

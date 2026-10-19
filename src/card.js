@@ -1,6 +1,14 @@
 import { normalizeConfig, buildDevice, chooseFeatured, formatTime } from './media-model.js';
 import { styles } from './styles.js';
 
+// Register at document scope: @font-face inside a shadow root is not portable.
+// A failed local font request leaves the dashboard font available immediately.
+const titleFont = new FontFace('NMD Satoshi',
+  `url("${new URL('../assets/fonts/Satoshi-Bold.woff2', import.meta.url).href}")`,
+  { style: 'normal', weight: '700', display: 'swap' });
+document.fonts.add(titleFont);
+titleFont.load().catch(() => {});
+
 // Brand assets are optional, local files. A missing image always leaves its name.
 const LOGOS = {
   plex: new URL('../assets/plex.png', import.meta.url).href,
