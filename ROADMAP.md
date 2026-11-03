@@ -1,12 +1,14 @@
 # NMD Media Card roadmap
 
-Last updated: 2026-10-19
+Last updated: 2026-11-03
 
 ## 🎯 Next up
 
-[RM-022 — Diagnose and resolve Silo playback controls](#rm-022-diagnose-and-resolve-silo-playback-controls) — **Paused for the night at the owner's request, 19 October.** The Android TV Remote/ADB entity-listing template was **not run**. When the owner resumes, start with that read-only inventory; playback testing comes after identifying the Living Room target.
+[RM-022 — Diagnose and resolve Silo playback controls](#rm-022-diagnose-and-resolve-silo-playback-controls) — **Paused; awaiting owner resumption.** The Android TV Remote/ADB entity-listing template remains **unrun**. Start with that read-only inventory and identify the Living Room target before playback testing. The 3 November API check adds a possible server-control route; no alternative route has been exercised.
 
 The approved artwork crop remains queued under [RM-021](#rm-021-crop-right-edge-artwork-overlays). Preserve the remaining order: [Plex source qualification](#rm-011-finish-plex-silo-and-emby-validation), then [TiviMate guide-tuning evidence](#rm-007-build-and-qualify-the-banner-observer). The broader device/companion investigation remains [deferred](#rm-020-establish-what-adb-and-a-device-companion-can-observe).
+
+The owner approved compact Silo title/episode enrichment on 3 November and queued it for later under [RM-023](#rm-023-enrich-silo-titles-and-episode-details), with **no synopsis**. Implementation has not started; this addition does not change the existing priority order.
 
 Roadmap maintenance does not approve new helpers, configuration changes, deployment or publication.
 
@@ -19,6 +21,7 @@ Roadmap maintenance does not approve new helpers, configuration changes, deploym
 - [ ] **Paused; fault unresolved — 19 October:** neither NMD nor the stock card pauses Silo. Direct `media_player.media_pause` to `media_player.shield_2` (Google Cast) reports HA success but playback continues; the physical remote pauses/resumes correctly. The failure occurs without either card or the universal parent. No control-code regression was found; the exact failing component is unproven.
   [Investigation, source comparison and local/live evidence](VERIFICATION.md#silo-pause-investigation--19-october-2026).
 - [ ] **Next, when the owner resumes:** run the read-only Android TV Remote/ADB entity inventory and identify the Living Room Shield target. The last supplied template was not run; no alternative control route has been tested. [Resume instructions](VERIFICATION.md#silo-pause-resume-point--19-october-2026).
+- **API candidate — 3 November:** the server advertises pause/resume/stop/message/terminate, and the owner-selected Android TV session reports `has_playback_control: true`. No command was sent; neither successful control nor a fix for the Cast route is established. The server command path can end an unacknowledged session, so keep command qualification separate from metadata reads. [API evidence and limits](VERIFICATION.md#silo-api-metadata-feasibility--3-november-2026).
 - [ ] Test a verified existing control route during an owner-arranged playback session; record actual pause/resume and HA state feedback. Keeping Cast metadata with Android TV Remote/ADB controls is a recommendation only. Inspect the universal player's configuration before proposing a bounded correction; no fallback, new integration or live configuration change is approved or implemented.
   Done when: the cause or demonstrated transport limitation is documented, any separately approved correction is verified through the installed card for pause and resume, title/artwork/progress remain correct, and relevant existing playback controls still work. Keep unresolved app/device coverage explicit; local mock actions alone do not close this issue.
 
@@ -30,6 +33,18 @@ Roadmap maintenance does not approve new helpers, configuration changes, deploym
 
 - [ ] **Approved and queued — 19 October:** crop approximately 10% from the artwork's right edge and favour left alignment to hide embedded ratings/provider marks. Preserve the original image and keep the card's app logo, title and playback control in their current positions. Do not implement during the pause investigation.
   Done when: preview the actual card at desktop and narrow widths, confirm the observed right-edge marks are outside the visible area, and check normal images and long titles; document the loss of some right-edge artwork and avoid claiming every overlay layout is removed. Live rollout remains a separate step after local review.
+
+---
+
+## 📋 Approved Silo metadata follow-up
+
+### RM-023: Enrich Silo titles and episode details
+
+- [ ] **Approved and queued — 3 November; resume when the owner has time.** Keep the existing compact layout and enrich its title/episode fields with Silo API data. Preserve artwork and control placement; **do not add a synopsis**. No card or HA integration implementation has started.
+- **Partial feasibility evidence:** an owner-run, account-filtered episode read supplied series/episode titles, season/episode numbers, progress and duration. Catalogue detail correctly identified the episode despite the session's coarse `series` label. Artwork URLs and description presence were reported, but images were not fetched or rendered. [Evidence, diagnostic corrections and open gates](VERIFICATION.md#silo-api-metadata-feasibility--3-november-2026).
+- [ ] **Next on resumption:** settle the protected HA-side delivery and credential approach, then bind enrichment to the key owner's account, selected profile, verified intended device, live session and content item. Keep the key out of dashboard YAML, browser-delivered card code and logs. The current key permits account-filtered reads but reports events `allowed: false`; the monitoring scope does not grant catalogue-detail reads, so its use needs a separate access decision. API transport, polling/event delivery and artwork-source changes are not settled by the visual approval.
+- [ ] Implement and qualify the approved title/episode enrichment, including movie fallback, missing fields, item/app changes, reconnects, failed lookups and late responses from a previous item or room. Preserve working artwork/progress and explicit control targets; coordinate two-device checks with RM-012.
+  Done when: the actual card shows the correct series and episode details in its existing compact layout, clears obsolete information, isolates account/profile/device/session data and passes focused local plus installed HA acceptance. One owner-run episode sample does not establish movie, transition, image, multi-room or long-term reliability. Playback-control qualification remains RM-022; deployment remains a separate step.
 
 ---
 
@@ -99,7 +114,7 @@ The finite ADB-first trial was approved under [RM-006](#rm-006-decide-on-the-liv
 
 - [ ] **Silo control acceptance blocked:** [RM-022](#rm-022-diagnose-and-resolve-silo-playback-controls) owns the pause investigation and resume point; retain this live acceptance gate until its installed control checks pass.
 - **Silo title fallback — 13 October, superseded by 19 October polish:** the earlier local title-only fix is covered by the broader current-title behavior. Owner accepted the installed appearance on 19 October; episode/transition and functional acceptance remain open. [Earlier evidence](VERIFICATION.md#silo-title-only-detail--13-october-2026) · [Installed appearance](VERIFICATION.md#polish-install-package--19-october-2026).
-- [ ] **Investigate Silo metadata — partial evidence, 19 October:** the owner screenshot confirms title/artwork/progress in the installed card. Two serial-verified, read-only Cast samples for Haunt supplied title, one HTTPS image address and advancing progress/duration; Android also exposed the title. No description/episode details were supplied in this movie's Cast metadata. Episode playback, item/app changes and broader freshness remain untested. [Evidence](VERIFICATION.md#silo-playback-source-check--19-october-2026).
+- [ ] **Investigate Silo metadata — partial evidence, 19 October / 3 November:** the owner screenshot confirms title/artwork/progress in the installed card. Two serial-verified, read-only Cast samples for Haunt supplied title, one HTTPS image address and advancing progress/duration; Android also exposed the title. No description/episode details were supplied in this movie's Cast metadata. Owner-run server API episode evidence and approved compact enrichment are now tracked under [RM-023](#rm-023-enrich-silo-titles-and-episode-details); Cast episode coverage, item/app changes and broader freshness remain untested. [Cast evidence](VERIFICATION.md#silo-playback-source-check--19-october-2026) · [API evidence](VERIFICATION.md#silo-api-metadata-feasibility--3-november-2026).
 - [ ] **Investigate Emby metadata:** perform the same field/source comparison for movie and episode playback; record what the card can already use, what needs a bounded mapping change and what would require additional setup.
   Done when, for each app: record available/missing fields, source and app/device versions, freshness across item/app changes, and practical card uses with setup/access limitations. Prefer existing ordinary-user sources; document gaps without assuming unavailable data or approving new integrations, credentials, helpers or UI changes. Full Android/companion investigation remains deferred under RM-020.
 - [ ] **Plex title source unresolved:** three owner-run HA readings and two serial-verified direct raw Cast checks on 12 October found empty titles and no recognised series/episode details. Movie and episode receiver replies both had movie metadata type, artwork/progress and a library metadata reference; no recognised title fields were found in custom data. This does not qualify every possible vendor field or other Android source. Existing standard Cast fields cannot supply titles in these samples; a lookup/setup decision remains separate. [Entity comparison](VERIFICATION.md#plex-movie-and-episode-ha-field-check--12-october-2026) · [Raw Cast evidence and limits](VERIFICATION.md#plex-raw-cast-status-check--12-october-2026).
