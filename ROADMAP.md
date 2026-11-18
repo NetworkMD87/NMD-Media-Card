@@ -1,12 +1,12 @@
 # NMD Media Card roadmap
 
-Last updated: 2026-11-03
+Last updated: 2026-11-18
 
 ## 🎯 Next up
 
-[RM-022 — Diagnose and resolve Silo playback controls](#rm-022-diagnose-and-resolve-silo-playback-controls) — **Paused; awaiting owner resumption.** The Android TV Remote/ADB entity-listing template remains **unrun**. Start with that read-only inventory and identify the Living Room target before playback testing. The 3 November API check adds a possible server-control route; no alternative route has been exercised.
+[RM-021 — Crop right-edge artwork overlays](#rm-021-crop-right-edge-artwork-overlays) — **Desktop and phone previews accepted.** Choose the next item before preparing a combined Home Assistant update.
 
-The approved artwork crop remains queued under [RM-021](#rm-021-crop-right-edge-artwork-overlays). Preserve the remaining order: [Plex source qualification](#rm-011-finish-plex-silo-and-emby-validation), then [TiviMate guide-tuning evidence](#rm-007-build-and-qualify-the-banner-observer). The broader device/companion investigation remains [deferred](#rm-020-establish-what-adb-and-a-device-companion-can-observe).
+[RM-022 — Diagnose and resolve Silo playback controls](#rm-022-diagnose-and-resolve-silo-playback-controls) remains paused until the owner resumes. Start with the unrun read-only Android TV Remote/ADB entity inventory. The remaining order is [Plex source qualification](#rm-011-finish-plex-silo-and-emby-validation), then [TiviMate guide-tuning evidence](#rm-007-build-and-qualify-the-banner-observer). The broader device/companion investigation remains [deferred](#rm-020-establish-what-adb-and-a-device-companion-can-observe).
 
 The owner approved compact Silo title/episode enrichment on 3 November and queued it for later under [RM-023](#rm-023-enrich-silo-titles-and-episode-details), with **no synopsis**. Implementation has not started; this addition does not change the existing priority order.
 
@@ -31,8 +31,8 @@ Roadmap maintenance does not approve new helpers, configuration changes, deploym
 
 ### RM-021: Crop right-edge artwork overlays
 
-- [ ] **Approved and queued — 19 October:** crop approximately 10% from the artwork's right edge and favour left alignment to hide embedded ratings/provider marks. Preserve the original image and keep the card's app logo, title and playback control in their current positions. Do not implement during the pause investigation.
-  Done when: preview the actual card at desktop and narrow widths, confirm the observed right-edge marks are outside the visible area, and check normal images and long titles; document the loss of some right-edge artwork and avoid claiming every overlay layout is removed. Live rollout remains a separate step after local review.
+- [ ] **Implemented and preview accepted — 18 November.** The owner approved the 455px desktop and 320px phone comparisons. The left-aligned crop hid the simulated marks and held the logo, title and playback control in place. Unmarked artwork and wrapped titles also passed local checks.
+  Next: pair the crop with the next selected item for one Home Assistant update, then check the original marked artwork. The crop removes about 10% from the right edge in the marked sample. Narrow, tall cards can crop further to fill the artwork area. [Local preview evidence](VERIFICATION.md#right-edge-artwork-crop-preview--18-november-2026).
 
 ---
 

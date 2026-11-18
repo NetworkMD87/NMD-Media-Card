@@ -14,8 +14,9 @@ button:disabled, button[aria-disabled="true"] { cursor:wait; opacity:.6; }
 h2 { font-size:17px; font-weight:500; line-height:24px; margin:0; overflow-wrap:anywhere; }
 .statuses { display:flex; flex-wrap:wrap; gap:6px 20px; margin-top:13px; font-size:12px; line-height:18px; }
 .status-name { color:var(--secondary-text-color,#bdcbd6); margin-right:5px; }
-.feature { position:relative; isolation:isolate; padding:14px 16px 10px; color:#f4f6f8; background:radial-gradient(ellipse at 100% 15%,#31596d,transparent 80%),#202d3c; }
-.backdrop { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:-2; }
+.feature { position:relative; isolation:isolate; overflow:hidden; padding:14px 16px 10px; color:#f4f6f8; background:radial-gradient(ellipse at 100% 15%,#31596d,transparent 80%),#202d3c; }
+/* Fit from the left and let the feature clip the last 10% of the image box. */
+.backdrop { position:absolute; inset:0 auto auto 0; width:calc(100% / .9); height:100%; object-fit:cover; object-position:left center; z-index:-2; }
 .feature::after { content:''; position:absolute; inset:0; z-index:-1; background:linear-gradient(90deg,rgba(12,20,29,.88),rgba(12,20,29,.58) 52%,rgba(12,20,29,.06)),linear-gradient(0deg,rgba(12,20,29,.78),transparent 55%); }
 .topline { display:flex; align-items:center; gap:7px; min-height:24px; font-size:12px; line-height:18px; color:#d1dfe8; }
 .room { color:#f4f6f8; font-weight:500; min-width:0; overflow-wrap:anywhere; }
