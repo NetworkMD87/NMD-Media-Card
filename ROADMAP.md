@@ -1,20 +1,20 @@
 # NMD Media Card roadmap
 
-Last updated: 2026-11-18
+Last updated: 2026-11-24
 
 ## 🎯 Next up
 
-[RM-021 — Crop right-edge artwork overlays](#rm-021-crop-right-edge-artwork-overlays) — **Desktop and phone previews accepted.** Choose the next item before preparing a combined Home Assistant update.
+[RM-023 — Enrich Silo titles and episode details](#rm-023-enrich-silo-titles-and-episode-details) — **Ready for the next session.** In Termix, upload `nmd-media-card-silo-setup-2026-11-24.zip` from `output/install/` to Home Assistant’s `/homeassistant` folder. Resume the installation one step at a time.
+
+[RM-021 — Crop right-edge artwork overlays](#rm-021-crop-right-edge-artwork-overlays) — **Included in the same ZIP.** After the update, verify the crop against the original marked artwork.
 
 [RM-022 — Diagnose and resolve Silo playback controls](#rm-022-diagnose-and-resolve-silo-playback-controls) remains paused until the owner resumes. Start with the unrun read-only Android TV Remote/ADB entity inventory. The remaining order is [Plex source qualification](#rm-011-finish-plex-silo-and-emby-validation), then [TiviMate guide-tuning evidence](#rm-007-build-and-qualify-the-banner-observer). The broader device/companion investigation remains [deferred](#rm-020-establish-what-adb-and-a-device-companion-can-observe).
-
-The owner approved compact Silo title/episode enrichment on 3 November and queued it for later under [RM-023](#rm-023-enrich-silo-titles-and-episode-details), with **no synopsis**. Implementation has not started; this addition does not change the existing priority order.
 
 Roadmap maintenance does not approve new helpers, configuration changes, deployment or publication.
 
 ---
 
-## 🚧 Current investigation
+## 🚧 Paused playback investigation
 
 ### RM-022: Diagnose and resolve Silo playback controls
 
@@ -31,8 +31,8 @@ Roadmap maintenance does not approve new helpers, configuration changes, deploym
 
 ### RM-021: Crop right-edge artwork overlays
 
-- [ ] **Implemented and preview accepted — 18 November.** The owner approved the 455px desktop and 320px phone comparisons. The left-aligned crop hid the simulated marks and held the logo, title and playback control in place. Unmarked artwork and wrapped titles also passed local checks.
-  Next: pair the crop with the next selected item for one Home Assistant update, then check the original marked artwork. The crop removes about 10% from the right edge in the marked sample. Narrow, tall cards can crop further to fill the artwork area. [Local preview evidence](VERIFICATION.md#right-edge-artwork-crop-preview--18-november-2026).
+- [x] **Implemented and preview accepted — 18 November.** At 455px desktop and 320px phone widths, the crop hid the simulated marks and held the logo, title and control in place. Unmarked artwork and wrapped titles also passed local checks. [Local preview evidence](VERIFICATION.md#right-edge-artwork-crop-preview--18-november-2026).
+- [ ] **Installed acceptance:** after the RM-023 update, check the original marked artwork on the installed dashboard. The local crop removed about 10% from the right edge of the marked sample. Tall, narrow cards can crop further to fill the artwork area.
 
 ---
 
@@ -40,11 +40,12 @@ Roadmap maintenance does not approve new helpers, configuration changes, deploym
 
 ### RM-023: Enrich Silo titles and episode details
 
-- [ ] **Approved and queued — 3 November; resume when the owner has time.** Keep the existing compact layout and enrich its title/episode fields with Silo API data. Preserve artwork and control placement; **do not add a synopsis**. No card or HA integration implementation has started.
-- **Partial feasibility evidence:** an owner-run, account-filtered episode read supplied series/episode titles, season/episode numbers, progress and duration. Catalogue detail correctly identified the episode despite the session's coarse `series` label. Artwork URLs and description presence were reported, but images were not fetched or rendered. [Evidence, diagnostic corrections and open gates](VERIFICATION.md#silo-api-metadata-feasibility--3-november-2026).
-- [ ] **Next on resumption:** settle the protected HA-side delivery and credential approach, then bind enrichment to the key owner's account, selected profile, verified intended device, live session and content item. Keep the key out of dashboard YAML, browser-delivered card code and logs. The current key permits account-filtered reads but reports events `allowed: false`; the monitoring scope does not grant catalogue-detail reads, so its use needs a separate access decision. API transport, polling/event delivery and artwork-source changes are not settled by the visual approval.
-- [ ] Implement and qualify the approved title/episode enrichment, including movie fallback, missing fields, item/app changes, reconnects, failed lookups and late responses from a previous item or room. Preserve working artwork/progress and explicit control targets; coordinate two-device checks with RM-012.
-  Done when: the actual card shows the correct series and episode details in its existing compact layout, clears obsolete information, isolates account/profile/device/session data and passes focused local plus installed HA acceptance. One owner-run episode sample does not establish movie, transition, image, multi-room or long-term reliability. Playback-control qualification remains RM-022; deployment remains a separate step.
+- [x] **Layout preview accepted — 18 November.** The owner approved the series title and compact season, episode and title line at both widths, with the artwork crop and no synopsis. Movies retain the title-only layout. [Preview evidence](VERIFICATION.md#silo-episode-preview-and-upstream-api-check--18-november-2026).
+- **Living Room source — 18 November:** the installed players supplied a Silo title and item ID. The Silo catalogue matched the ID and returned the missing episode fields. The owner confirmed both Shields share an account and the main profile can see the household’s libraries. [Live read-only evidence](VERIFICATION.md#living-room-silo-episode-source-check--18-november-2026).
+- [x] **Saved-key lookup passed — 24 November.** The owner used the saved key and main profile for a read-only lookup of the current Living Room item. The returned ID matched and all four episode fields were present. [Scoped-key evidence](VERIFICATION.md#silo-catalogue-key-check--24-november-2026).
+- [x] **One-time Home Assistant setup built and packaged locally — 24 November.** Add NMD Silo in Devices & services, enter the saved `catalog:read` key and choose the main profile. The card matches results to players already listed in `devices`. Local checks covered three configured rooms. [Local and package verification](VERIFICATION.md#one-time-silo-setup-and-automatic-room-matching--24-november-2026).
+- [ ] **Install and verify next session.** The earlier files were extracted, the manual sensor was never configured, and the owner removed the two trial secrets. Replace the trial integration files with the revised package, add NMD Silo from the integration screen and switch the dashboard resource. Keep the previous working resource available for rollback. Check a real Living Room episode and the [artwork crop](#rm-021-crop-right-edge-artwork-overlays) together.
+- [ ] **Complete installed acceptance.** Verify correct episode details, movie fallback, missing fields, viewer profile switches, item/app changes, reconnects and late or failed lookups. Check Snug and simultaneous players with [RM-012](#rm-012-qualify-snug-and-two-device-isolation). Artwork, progress and the existing control target must follow the correct player. [RM-022](#rm-022-diagnose-and-resolve-silo-playback-controls) owns the separate pause fault.
 
 ---
 
@@ -86,7 +87,7 @@ The finite ADB-first trial was approved under [RM-006](#rm-006-decide-on-the-liv
 - [ ] Prevent overlapping capture across scripts/ADB clients for one device; HA `mode: single` protects only its own script. Demonstrate scheduling from completion, failure backoff and bounded stopping. Agree and measure resource use and remote/playback responsiveness; capture spacing is not a CPU measurement or reliability result.
 - [ ] Check screen-reader/button-remapper compatibility on supported versions. UI automation may suppress accessibility services; this is an unverified risk, not an observed Shield failure.
 - [ ] Agree and verify minimal viewing-data retention and diagnostic output. Programme fields can enter HA responses, notifications and logs; credential filtering does not eliminate viewing-history concerns. Exclude credentials/private raw replies from saved evidence.
-  Gates: RM-017 before notification trials; RM-007 feasibility before commissioning persistent collection. New collector/workflow decisions remain separate.
+  Gates: regenerate and verify saved HA notification scripts with the locally verified RM-017 fix before another notification trial. Establish RM-007 feasibility before commissioning persistent collection. New collector and workflow decisions remain separate.
 
 ### RM-008: Match observed channels to provider entries
 
@@ -112,9 +113,7 @@ The finite ADB-first trial was approved under [RM-006](#rm-006-decide-on-the-liv
 
 ### RM-011: Finish Plex, Silo and Emby validation
 
-- [ ] **Silo control acceptance blocked:** [RM-022](#rm-022-diagnose-and-resolve-silo-playback-controls) owns the pause investigation and resume point; retain this live acceptance gate until its installed control checks pass.
-- **Silo title fallback — 13 October, superseded by 19 October polish:** the earlier local title-only fix is covered by the broader current-title behavior. Owner accepted the installed appearance on 19 October; episode/transition and functional acceptance remain open. [Earlier evidence](VERIFICATION.md#silo-title-only-detail--13-october-2026) · [Installed appearance](VERIFICATION.md#polish-install-package--19-october-2026).
-- [ ] **Investigate Silo metadata — partial evidence, 19 October / 3 November:** the owner screenshot confirms title/artwork/progress in the installed card. Two serial-verified, read-only Cast samples for Haunt supplied title, one HTTPS image address and advancing progress/duration; Android also exposed the title. No description/episode details were supplied in this movie's Cast metadata. Owner-run server API episode evidence and approved compact enrichment are now tracked under [RM-023](#rm-023-enrich-silo-titles-and-episode-details); Cast episode coverage, item/app changes and broader freshness remain untested. [Cast evidence](VERIFICATION.md#silo-playback-source-check--19-october-2026) · [API evidence](VERIFICATION.md#silo-api-metadata-feasibility--3-november-2026).
+- **Silo:** the installed card showed a movie title, artwork and progress. The saved key passed one episode lookup and the one-time setup is packaged locally. [RM-023](#rm-023-enrich-silo-titles-and-episode-details) tracks installed episode and transition checks. [RM-022](#rm-022-diagnose-and-resolve-silo-playback-controls) tracks the paused control investigation. [Movie playback evidence](VERIFICATION.md#silo-playback-source-check--19-october-2026) · [Installed appearance](VERIFICATION.md#polish-install-package--19-october-2026).
 - [ ] **Investigate Emby metadata:** perform the same field/source comparison for movie and episode playback; record what the card can already use, what needs a bounded mapping change and what would require additional setup.
   Done when, for each app: record available/missing fields, source and app/device versions, freshness across item/app changes, and practical card uses with setup/access limitations. Prefer existing ordinary-user sources; document gaps without assuming unavailable data or approving new integrations, credentials, helpers or UI changes. Full Android/companion investigation remains deferred under RM-020.
 - [ ] **Plex title source unresolved:** three owner-run HA readings and two serial-verified direct raw Cast checks on 12 October found empty titles and no recognised series/episode details. Movie and episode receiver replies both had movie metadata type, artwork/progress and a library metadata reference; no recognised title fields were found in custom data. This does not qualify every possible vendor field or other Android source. Existing standard Cast fields cannot supply titles in these samples; a lookup/setup decision remains separate. [Entity comparison](VERIFICATION.md#plex-movie-and-episode-ha-field-check--12-october-2026) · [Raw Cast evidence and limits](VERIFICATION.md#plex-raw-cast-status-check--12-october-2026).
@@ -141,10 +140,15 @@ The finite ADB-first trial was approved under [RM-006](#rm-006-decide-on-the-liv
 
 ## 💭 Later / proposed
 
+### RM-024: Discover TVs and streaming players automatically
+
+- [ ] **Requested — 24 November.** Automatically find eligible TV and streaming-player entities that Home Assistant already knows about, including rooms beyond Living Room and Snug. Today, the `devices` list can hold any number of rooms, and each player is added manually. RM-023 automatically matches Silo details within that list.
+  Done when: eligible players appear without editing YAML for each one, the same physical player appears once when Cast, Remote and Universal integrations overlap, unrelated speakers and helper entities are excluded, and existing explicit selections and control targets remain valid. Confirm room naming and how the owner can exclude or override a detected player before implementation.
+
 ### RM-014: Prepare a supported distribution
 
 - [ ] **Awaiting defect closure and live compatibility:** establish supported HA versions, installation/update/cache-refresh instructions and explicit metadata/research/device limitations. No stable release or HACS package exists.
-- [ ] Verify a complete package includes the entry module, imported `src/` modules and assets; qualify updates and cache refresh.
+- [ ] Verify supported packages include the entry module, imported `src/` modules and assets. Decide how to bundle the optional NMD Silo integration for distribution and qualify updates and cache refresh.
   Satoshi is available locally but excluded from Git under its redistribution restrictions. Resolve font distribution rights or document each user's own download before packaging; preserve the dashboard-font fallback. [Font notice](assets/NOTICE.md#local-title-font).
 - [ ] Resolve TiviMate redistribution permission and include [asset notices](assets/NOTICE.md) and the restrictive custom [licence](LICENSE); local logo acceptance is not redistribution approval.
 - [ ] Document reproducible maintainer/offline-research checks and prerequisites; reconcile claims with RM-016/RM-017 and separate local, native HA and physical-device evidence. No npm runtime dependencies were found; packaging does not justify a framework.
@@ -157,7 +161,7 @@ The finite ADB-first trial was approved under [RM-006](#rm-006-decide-on-the-liv
 
 ### RM-015: Decide on optional product improvements
 
-- [ ] **Unapproved:** assess a visual editor, extra controls, expansion and alternative layouts for many active devices; YAML setup and the approved compact card remain the baseline. [Design boundaries](DESIGN-DECISIONS.md#still-proposals-or-unresolved).
+- [ ] **Unapproved:** assess a visual card editor, extra controls, expansion and alternative layouts for many active devices. Rooms are still listed in the card YAML. The optional Silo connection has its own Home Assistant setup. [Design boundaries](DESIGN-DECISIONS.md#still-proposals-or-unresolved).
 - [ ] After RM-020, assess optional companion benefits: faster playback/progress, other-app metadata, device pairing, connection/permission/freshness health, privacy-conscious diagnostics, supported playback/seek/next/previous actions and automation signals tied to confirmed playback.
   Prefer a small optional companion feeding the existing card only if evidence supports it; these are candidates, not promises. Broader interfaces, controls and workflows need separate scope/experience approval.
 
@@ -193,7 +197,7 @@ The finite ADB-first trial was approved under [RM-006](#rm-006-decide-on-the-liv
 ### RM-003: Add the requested app logos and remove duplicate app headings
 
 - [x] **Completed — 11 October 2026.** Selected rounded TiviMate symbol, Silo icon and existing Plex/Emby assets were included; 19 model and 25 browser checks passed.
-  Owner confirmed TiviMate's live appearance; Silo/Emby live compatibility remains open. [Logo evidence](VERIFICATION.md#official-logo-revision--11-october-2026).
+  Owner confirmed TiviMate's live appearance. Broader playback and compatibility are tracked in RM-011. [Logo evidence](VERIFICATION.md#official-logo-revision--11-october-2026).
 
 ### RM-004: Establish bounded TiviMate/provider metadata feasibility
 
